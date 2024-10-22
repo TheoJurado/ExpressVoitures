@@ -12,7 +12,7 @@ namespace ExpressVoitures
 {
     public static class DbInitializer
     {
-        public static IApplicationBuilder SeedDatabase(this IApplicationBuilder app, IConfiguration config)
+        public static IApplicationBuilder SeedDatabase(this IApplicationBuilder app)
         {
             ArgumentNullException.ThrowIfNull(app, nameof(app));
 
@@ -20,11 +20,9 @@ namespace ExpressVoitures
             var services = scope.ServiceProvider;
             try
             {
-                var context = services.GetRequiredService<P5Referential>();
+                var context = services.GetRequiredService<ApplicationDbContext>();
                 context.Database.Migrate();
-                var identityContext = services.GetRequiredService<AppIdentityDbContext>();
-                identityContext.Database.Migrate();
-                SeedData.Initialize(services, config);
+                SeedData.Initialize(services);
             }
             catch (Exception ex)
             {

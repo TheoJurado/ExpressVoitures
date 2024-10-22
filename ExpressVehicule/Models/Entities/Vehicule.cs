@@ -1,4 +1,4 @@
-﻿namespace ExpressVoitures.Models
+﻿namespace ExpressVoitures.Models.Entities
 {
     public partial class Vehicule
     {

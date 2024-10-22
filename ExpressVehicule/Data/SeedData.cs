@@ -1,21 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ExpressVoitures.Models;
+using ExpressVoitures.Models.Entities;
 
 namespace ExpressVoitures.Data
 {
     public class SeedData
     {
-        public static void Initialize(IServiceProvider serviceProvider, IConfiguration config)
+        public static void Initialize(IServiceProvider serviceProvider)
         {
-            using var context = new P5Referential(
-                serviceProvider.GetRequiredService<DbContextOptions<P5Referential>>(), config);
+            using var context = new ApplicationDbContext(
+                serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
 
-            if (context.Vehicule.Any())
+            if (context.Vehicules.Any())
             {
                 return;
             }
 
-            context.Vehicule.AddRange(
+            context.Vehicules.AddRange(
                  new Vehicule
                  {
                      CodeVIN = "B38CX23",
