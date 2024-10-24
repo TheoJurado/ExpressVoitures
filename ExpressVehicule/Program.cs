@@ -1,5 +1,6 @@
 using ExpressVoitures.Data;
 using ExpressVoitures.Models;
+using ExpressVoitures.Models.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +16,9 @@ namespace ExpressVoitures
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
-           
+
+            builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IVoitureService, VoitureService>();
 
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();

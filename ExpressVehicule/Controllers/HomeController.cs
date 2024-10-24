@@ -1,4 +1,6 @@
 using ExpressVoitures.Models;
+using ExpressVoitures.Models.Entities;
+using ExpressVoitures.Models.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,15 +9,18 @@ namespace ExpressVoitures.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IVoitureService _VoitureService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IVoitureService voitureService)
         {
             _logger = logger;
+            _VoitureService = voitureService;
         }
 
         public IActionResult Index()
         {
-            return View();
+            IEnumerable<Vehicule> vehicules = _VoitureService.GetAllVoitures();
+            return View(vehicules);
         }
 
         public IActionResult Privacy()
