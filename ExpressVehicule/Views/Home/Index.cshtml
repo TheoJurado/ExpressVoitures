@@ -34,8 +34,17 @@
                     <td>@v.Model</td>
                     <td>@v.Finition</td>
                     <td style="text-align:center">@v.PrixVente <label> €</label></td>
+                    <td>
+                        <form id="@v.Id" asp-action="SeeCarIndex" asp-controller="CarDetail" method="post">
+                            <input type="hidden" name="id" value="@v.Id" />
+                            <button type="submit" class="btn btn-primary">
+                                Information
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
+    <a href="/Admin/AddCar">ajouter une voiture</a>
 </div>

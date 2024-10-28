@@ -1,7 +1,7 @@
 ﻿@using ExpressVoitures.Models.Entities
-@model IEnumerable<ExpressVoitures.Models.Entities.Vehicule>
+@model ExpressVoitures.Models.Entities.Vehicule
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Car Page";
 }
 <br />
 <div id="panel-body">
@@ -26,16 +26,13 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (Vehicule v in Model)
-            {
-                <tr>
-                    <td>@v.Annee</td>
-                    <td>@v.Marque</td>
-                    <td>@v.Model</td>
-                    <td>@v.Finition</td>
-                    <td style="text-align:center">@v.PrixVente</td>
-                </tr>
-            }
+            <tr>
+                <td>@Model.Annee</td>
+                <td>@Model.Marque</td>
+                <td>@Model.Model</td>
+                <td>@Model.Finition</td>
+                <td style="text-align:center">@Model.PrixVente</td>
+            </tr>@**@
         </tbody>
     </table>
 </div>

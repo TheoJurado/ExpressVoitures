@@ -17,5 +17,17 @@ namespace ExpressVoitures.Models.Services
             IEnumerable<Vehicule> allVoitures = _context.Vehicules.Where(v => v.Id > 0);
             return allVoitures.ToList();
         }
+
+        public Vehicule GetCarById(int id)
+        {
+            List<Vehicule> cars = GetAllVoitures().ToList();
+            return cars.Find(v => v.Id == id);
+        }
+
+        public void SaveCar(Vehicule car)
+        {
+            _context.Vehicules.Add(car);
+            _context.SaveChanges();
+        }
     }
 }

@@ -1,0 +1,47 @@
+﻿@model ExpressVoitures.Models.Entities.Vehicule
+@{
+    Layout = "_Layout";
+}
+
+<div asp-validation-summary="All" class="text-danger"></div>
+<form asp-action="CreateCar" method="post">
+    <div class="mb-3 col-6">
+        <label>CodeVIN :</label><input asp-for="CodeVIN" class="form-control" />
+    </div>
+    <div class="mb-3 col-4">
+        <label>Année :</label><input asp-for="Annee" class="form-control" />
+    </div>
+    <div class="mb-3 col-8">
+        <label>Marque :</label><input asp-for="Marque" class="form-control" />
+    </div>
+    <div class="mb-3 col-4">
+        <label>Model :</label><input asp-for="Model" type="text" class="form-control" />
+    </div>
+    <div class="mb-3col-8">
+        <label>Finition :</label><input asp-for="Finition" class="form-control" />
+    </div>
+    <div class="mb-3 col-6">
+        <label>Date d'achat :</label><input asp-for="DateAchat" class="form-control" />
+    </div>
+    <div class="mb-3 col-4">
+        <label>Prix d'achat :</label><input asp-for="PrixAchat" class="form-control" />
+    </div>
+    <div class="mb-3 col-8">
+        <label>Réparation :</label><input asp-for="Reparation" class="form-control" />
+    </div>
+    <div class="mb-3 col-4">
+        <label>Cout des réparations :</label><input asp-for="CoutReparation" type="text" class="form-control" />
+    </div>
+    <div class="mb-3col-8">
+        <label>Date de mise à disposition de vente :</label><input asp-for="DateDispoVente" class="form-control" />
+    </div>
+    <div class="mb-3 col-4">
+        <label>Prix de vente :</label><input asp-for="PrixVente" type="text" class="form-control" />
+    </div>
+    <div class="mb-3col-8">
+        <label>Date de vente :</label><input asp-for="DateVente" class="form-control" />
+    </div>
+    <div class="text-center">
+        <input class="btn btn-primary" type="submit" value="Enregistrer" />
+    </div>
+</form>
