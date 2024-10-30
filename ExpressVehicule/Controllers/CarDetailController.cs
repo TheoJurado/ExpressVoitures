@@ -20,7 +20,13 @@ namespace ExpressVoitures.Controllers
         public IActionResult CarIndex(Vehicule voiture)
         {
             return View(voiture);
-        }/**/
+        }
+
+        public IActionResult DeletCar(int id)
+        {
+            _VoitureService.DeleteCar(id);
+            return RedirectToAction("Index", "Home");
+        }
 
         [HttpPost]
         public RedirectToActionResult SeeCarIndex(int id)

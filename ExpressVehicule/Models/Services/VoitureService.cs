@@ -29,5 +29,20 @@ namespace ExpressVoitures.Models.Services
             _context.Vehicules.Add(car);
             _context.SaveChanges();
         }
+
+        public void DeleteCar(int id)
+        {
+            Vehicule car = _context.Vehicules.First(v => v.Id == id);
+            if (car != null)
+            {
+                _context.Vehicules.Remove(car);
+                _context.SaveChanges();
+            }
+        }
+
+        public void UpdateCar(int id, Vehicule car)
+        {
+            //TODO
+        }
     }
 }

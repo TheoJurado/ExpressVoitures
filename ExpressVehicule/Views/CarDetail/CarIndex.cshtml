@@ -32,7 +32,13 @@
                 <td>@Model.Model</td>
                 <td>@Model.Finition</td>
                 <td style="text-align:center">@Model.PrixVente</td>
-            </tr>@**@
+            </tr>
         </tbody>
     </table>
+    
+    @using (Html.BeginForm("DeletCar", "CarDetail", FormMethod.Post))
+    {
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="btn btn-danger">Supprimer le véhicule</button>
+    }
 </div>
