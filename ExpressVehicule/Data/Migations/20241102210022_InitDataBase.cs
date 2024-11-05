@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ExpressVoitures.Data.Migrations
+namespace ExpressVoitures.Data.Migations
 {
     /// <inheritdoc />
     public partial class InitDataBase : Migration
@@ -11,6 +11,18 @@ namespace ExpressVoitures.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Admins",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MdP = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Admins", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -56,18 +68,10 @@ namespace ExpressVoitures.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CodeVIN = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Annee = table.Column<int>(type: "int", nullable: false),
                     Marque = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Finition = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateAchat = table.Column<DateOnly>(type: "date", nullable: false),
-                    PrixAchat = table.Column<double>(type: "float", nullable: false),
-                    Reparation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CoutReparation = table.Column<double>(type: "float", nullable: false),
-                    DateDispoVente = table.Column<DateOnly>(type: "date", nullable: false),
-                    PrixVente = table.Column<double>(type: "float", nullable: false),
-                    DateVente = table.Column<DateOnly>(type: "date", nullable: false)
+                    Finition = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -180,6 +184,53 @@ namespace ExpressVoitures.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CodeVin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateAchat = table.Column<DateOnly>(type: "date", nullable: false),
+                    PrixAchat = table.Column<double>(type: "float", nullable: false),
+                    DateDispoVente = table.Column<DateOnly>(type: "date", nullable: false),
+                    PrixVente = table.Column<double>(type: "float", nullable: false),
+                    DateVente = table.Column<DateOnly>(type: "date", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Photo = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    VehiculeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Vehicules_VehiculeId",
+                        column: x => x.VehiculeId,
+                        principalTable: "Vehicules",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reparations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Prix = table.Column<double>(type: "float", nullable: false),
+                    TransactionId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reparations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reparations_Transactions_TransactionId",
+                        column: x => x.TransactionId,
+                        principalTable: "Transactions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -218,11 +269,24 @@ namespace ExpressVoitures.Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reparations_TransactionId",
+                table: "Reparations",
+                column: "TransactionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_VehiculeId",
+                table: "Transactions",
+                column: "VehiculeId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Admins");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -239,13 +303,19 @@ namespace ExpressVoitures.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Vehicules");
+                name: "Reparations");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Transactions");
+
+            migrationBuilder.DropTable(
+                name: "Vehicules");
         }
     }
 }

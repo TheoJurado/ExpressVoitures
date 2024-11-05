@@ -17,30 +17,27 @@ namespace ExpressVoitures.Controllers
         }
 
 
-        public IActionResult CarIndex(Vehicule voiture)
+        public IActionResult CarIndex(int idTransaction)
         {
-            return View(voiture);
+            var transaction = _VoitureService.GetTransactionById(idTransaction);
+            if (transaction == null || transaction.Vehicule == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(transaction);
         }
 
         public IActionResult DeletCar(int id)
         {
-            _VoitureService.DeleteCar(id);
+            _VoitureService.DeleteTransactionAndDataLinded(id);
             return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
-        public RedirectToActionResult SeeCarIndex(int id)
+        public RedirectToActionResult SeeCarIndex(int idToTransfer)
         {
-            Vehicule voiture = _VoitureService.GetCarById(id);
-
-            if (voiture != null)
-            {
-                return RedirectToAction("CarIndex", voiture);
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            return RedirectToAction("CarIndex", new { idTransaction = idToTransfer });
         }
 
 

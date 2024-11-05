@@ -4,16 +4,19 @@ using ExpressVoitures.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ExpressVoitures.Data.Migrations
+namespace ExpressVoitures.Data.Migations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241102210022_InitDataBase")]
+    partial class InitDataBase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,90 @@ namespace ExpressVoitures.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ExpressVoitures.Models.Entities.Admin", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MdP")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Admins");
+                });
+
+            modelBuilder.Entity("ExpressVoitures.Models.Entities.Reparation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<double>("Prix")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("TransactionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TransactionId");
+
+                    b.ToTable("Reparations");
+                });
+
+            modelBuilder.Entity("ExpressVoitures.Models.Entities.Transaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CodeVin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly>("DateAchat")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("DateDispoVente")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly>("DateVente")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Photo")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<double>("PrixAchat")
+                        .HasColumnType("float");
+
+                    b.Property<double>("PrixVente")
+                        .HasColumnType("float");
+
+                    b.Property<int>("VehiculeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehiculeId");
+
+                    b.ToTable("Transactions");
+                });
 
             modelBuilder.Entity("ExpressVoitures.Models.Entities.Vehicule", b =>
                 {
@@ -33,22 +120,6 @@ namespace ExpressVoitures.Data.Migrations
                     b.Property<int>("Annee")
                         .HasColumnType("int");
 
-                    b.Property<string>("CodeVIN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("CoutReparation")
-                        .HasColumnType("float");
-
-                    b.Property<DateOnly>("DateAchat")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly>("DateDispoVente")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly>("DateVente")
-                        .HasColumnType("date");
-
                     b.Property<string>("Finition")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -58,16 +129,6 @@ namespace ExpressVoitures.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Model")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("PrixAchat")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PrixVente")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Reparation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -278,6 +339,25 @@ namespace ExpressVoitures.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ExpressVoitures.Models.Entities.Reparation", b =>
+                {
+                    b.HasOne("ExpressVoitures.Models.Entities.Transaction", "Transaction")
+                        .WithMany("Reparations")
+                        .HasForeignKey("TransactionId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Transaction");
+                });
+
+            modelBuilder.Entity("ExpressVoitures.Models.Entities.Transaction", b =>
+                {
+                    b.HasOne("ExpressVoitures.Models.Entities.Vehicule", "Vehicule")
+                        .WithMany("Transactions")
+                        .HasForeignKey("VehiculeId");
+
+                    b.Navigation("Vehicule");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -327,6 +407,16 @@ namespace ExpressVoitures.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ExpressVoitures.Models.Entities.Transaction", b =>
+                {
+                    b.Navigation("Reparations");
+                });
+
+            modelBuilder.Entity("ExpressVoitures.Models.Entities.Vehicule", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

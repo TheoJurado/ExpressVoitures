@@ -1,5 +1,5 @@
 ﻿@using ExpressVoitures.Models.Entities
-@model IEnumerable<ExpressVoitures.Models.Entities.Vehicule>
+@model IEnumerable<ExpressVoitures.Models.Entities.Transaction>
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -26,17 +26,17 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (Vehicule v in Model)
+            @foreach (Transaction t in Model)
             {
                 <tr>
-                    <td>@v.Annee</td>
-                    <td>@v.Marque</td>
-                    <td>@v.Model</td>
-                    <td>@v.Finition</td>
-                    <td style="text-align:center">@v.PrixVente <label> €</label></td>
+                    <td>@t.Vehicule.Annee</td>
+                    <td>@t.Vehicule.Marque</td>
+                    <td>@t.Vehicule.Model</td>
+                    <td>@t.Vehicule.Finition</td>
+                    <td style="text-align:center">@t.PrixVente <label> €</label></td>
                     <td>
-                        <form id="@v.Id" asp-action="SeeCarIndex" asp-controller="CarDetail" method="post">
-                            <input type="hidden" name="id" value="@v.Id" />
+                        <form id="@t.VehiculeId" asp-action="SeeCarIndex" asp-controller="CarDetail" method="post">
+                            <input type="hidden" name="id" value="@t.Id" />
                             <button type="submit" class="btn btn-primary">
                                 Information
                             </button>

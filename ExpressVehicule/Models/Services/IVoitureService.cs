@@ -7,11 +7,15 @@ namespace ExpressVoitures.Models.Services
     {
         IEnumerable<Vehicule> GetAllVoitures();
 
+        IEnumerable<Transaction> GetAllTransactions();
+
         public Vehicule GetCarById(int i);
+
+        public Transaction GetTransactionById(int i);
 
         void SaveCar(Vehicule car);
 
-        public void DeleteCar(int id);
+        public void DeleteTransactionAndDataLinded(int id);
         public void UpdateCar(int id, Vehicule car);
 
     }

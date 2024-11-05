@@ -19,8 +19,8 @@ namespace ExpressVoitures.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Vehicule> vehicules = _VoitureService.GetAllVoitures();
-            return View(vehicules);
+            IEnumerable<Transaction> transactions = _VoitureService.GetAllTransactions();
+            return View(transactions);
         }
 
         public IActionResult Privacy()

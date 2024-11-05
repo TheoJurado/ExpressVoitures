@@ -11,6 +11,21 @@ namespace ExpressVoitures.Models.Services
         {
             _context = context;
         }
+        public IEnumerable<Transaction> GetAllTransactions()
+        {
+            IEnumerable<Transaction> allTransaction = _context.Transactions.Where(t => t.Id > 0);
+            foreach (Transaction transaction in allTransaction)
+            {
+                transaction.Vehicule = GetCarById(transaction.VehiculeId);
+            }
+            return allTransaction.ToList();
+        }
+
+        public Transaction GetTransactionById(int id)
+        {
+            List<Transaction> transactions = GetAllTransactions().ToList();
+            return transactions.Find(t => t.Id == id);
+        }
 
         public IEnumerable<Vehicule> GetAllVoitures()
         {
@@ -30,12 +45,17 @@ namespace ExpressVoitures.Models.Services
             _context.SaveChanges();
         }
 
-        public void DeleteCar(int id)
+        public void DeleteTransactionAndDataLinded(int id)
         {
-            Vehicule car = _context.Vehicules.First(v => v.Id == id);
-            if (car != null)
+            Transaction transaction = GetTransactionById(id);
+            if (transaction != null)
             {
-                _context.Vehicules.Remove(car);
+                _context.Vehicules.Remove(GetCarById(transaction.VehiculeId));
+                foreach (Reparation r in transaction.Reparations)
+                {
+                    _context.Reparations.Remove(r);
+                }
+                _context.Transactions.Remove(transaction);
                 _context.SaveChanges();
             }
         }

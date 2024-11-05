@@ -1,5 +1,5 @@
 ﻿@using ExpressVoitures.Models.Entities
-@model ExpressVoitures.Models.Entities.Vehicule
+@model ExpressVoitures.Models.Entities.Transaction
 @{
     ViewData["Title"] = "Car Page";
 }
@@ -26,13 +26,22 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>@Model.Annee</td>
-                <td>@Model.Marque</td>
-                <td>@Model.Model</td>
-                <td>@Model.Finition</td>
-                <td style="text-align:center">@Model.PrixVente</td>
-            </tr>
+            @if (Model.Vehicule != null)
+            {
+                <tr>
+                    <td>@Model.Vehicule.Annee</td>
+                    <td>@Model.Vehicule.Marque</td>
+                    <td>@Model.Vehicule.Model</td>
+                    <td>@Model.Vehicule.Finition</td>
+                    <td style="text-align:center">@Model.PrixVente</td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5">Véhicule non disponible</td>
+                </tr>
+            }
         </tbody>
     </table>
     
