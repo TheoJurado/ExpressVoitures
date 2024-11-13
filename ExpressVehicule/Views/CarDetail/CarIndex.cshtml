@@ -1,5 +1,5 @@
 ﻿@using ExpressVoitures.Models.Entities
-@model ExpressVoitures.Models.Entities.Transaction
+@model ExpressVoitures.Models.Entities.Annonce
 @{
     ViewData["Title"] = "Car Page";
 }
@@ -8,21 +8,13 @@
     <table class="table table-bordered table-striped table-sm">
         <thead>
             <tr>
-                <th>
-                    <label>Année</label>
-                </th>
-                <th>
-                    <label>Marque</label>
-                </th>
-                <th>
-                    <label>Modèle</label>
-                </th>
-                <th>
-                    <label>Finition</label>
-                </th>
-                <th>
-                    <label>Prix</label>
-                </th>
+                <th><label>Année</label></th>
+                <th><label>Marque</label></th>
+                <th><label>Modèle</label></th>
+                <th><label>Finition</label></th>
+                <th><label>Prix</label></th>
+                <th><label>Description</label></th>
+                <th><label>Photo</label></th>
             </tr>
         </thead>
         <tbody>
@@ -33,7 +25,18 @@
                     <td>@Model.Vehicule.Marque</td>
                     <td>@Model.Vehicule.Model</td>
                     <td>@Model.Vehicule.Finition</td>
-                    <td style="text-align:center">@Model.PrixVente</td>
+                    <td style="text-align:center">@Model.Price <label> €</label></td>
+                    <td>@Model.Description</td>
+                    <td>
+                        @if (Model.Photo != null && Model.Photo.Length > 4)
+                        {
+                            <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Photo))" alt="Photo" style="max-width: 100px; max-height: 100px;" />
+                        }
+                        else
+                        {
+                            <span>Aucune photo</span>
+                        }
+                    </td>
                 </tr>
             }
             else

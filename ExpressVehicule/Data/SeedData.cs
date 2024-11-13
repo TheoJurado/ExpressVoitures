@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ExpressVoitures.Models.Entities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ExpressVoitures.Data
 {
@@ -15,77 +16,84 @@ namespace ExpressVoitures.Data
                 return;
             }/**/
 
+            Vehicule vehicule1 = new Vehicule
+            {
+                CodeVin = "B38CX23",
+                Annee = 2019,
+                Marque = "Mazda",
+                Model = "Miata",
+                Finition = "LE",
+            };
+            Vehicule vehicule2 = new Vehicule
+            {
+                CodeVin = "TX84TP32",
+                Annee = 2007,
+                Marque = "Jeep",
+                Model = "Liberty",
+                Finition = "Sport",
+            };
+            Vehicule vehicule3 = new Vehicule
+            {
+                CodeVin = "R41P243",
+                Annee = 2007,
+                Marque = "Renault",
+                Model = "Scénic",
+                Finition = "TCe",
+            };
+
             context.Vehicules.AddRange(
-                new Vehicule
-                {
-                    //Id = 1,
-                    Annee = 2019,
-                    Marque = "Mazda",
-                    Model = "Miata",
-                    Finition = "LE",
-                },
-                new Vehicule
-                {
-                    //Id = 2,
-                    Annee = 2007,
-                    Marque = "Jeep",
-                    Model = "Liberty",
-                    Finition = "Sport",
-                },
-                new Vehicule
-                {
-                    //Id = 3,
-                    Annee = 2007,
-                    Marque = "Renault",
-                    Model = "Scénic",
-                    Finition = "TCe",
-                }
+                vehicule1,
+                vehicule2,
+                vehicule3
             );
             context.SaveChanges();
 
             #region transactions
-            Transaction transaction1 = new Transaction
+            Transaction transaction1Achat = new Transaction
             {
-                CodeVin = "B38CX23",
-                DateAchat = new DateOnly(2022, 01, 07),
-                PrixAchat = 1800,
-                DateDispoVente = new DateOnly(2022, 04, 07),
-                PrixVente = 9900,
-                DateVente = new DateOnly(2022, 04, 08),
-                Description = "",
-                Photo = new byte[] { },
-                VehiculeId = 1,
-                //Reparations = { reparation1 }
+                Date = new DateOnly(2022, 01, 07),
+                Price = 1800,
+                Type = TransactionType.Buy,
             };
-            Transaction transaction2 = new Transaction
+            Transaction transaction1Vente = new Transaction
             {
-                CodeVin = "TX84TP32",
-                DateAchat = new DateOnly(2022, 04, 02),
-                PrixAchat = 4500,
-                DateDispoVente = new DateOnly(2022, 04, 07),
-                PrixVente = 5350,
-                DateVente = new DateOnly(2022, 04, 09),
-                Description = "",
-                Photo = new byte[] { },
-                VehiculeId = 2,
-                //Reparations = { reparation2 }
+                Date = new DateOnly(2022, 04, 08),
+                Price = 9900,
+                Type = TransactionType.Sell,
             };
-            Transaction transaction3 = new Transaction
+
+            Transaction transaction2Achat = new Transaction
             {
-                CodeVin = "R41P243",
-                DateAchat = new DateOnly(2022, 04, 04),
-                PrixAchat = 1800,
-                DateDispoVente = new DateOnly(2022, 04, 08),
-                PrixVente = 2990,
-                Description = "",
-                Photo = new byte[] { },
-                VehiculeId = 3,
-                //Reparations = { reparation3, reparation4 }
+                Date = new DateOnly(2022, 04, 02),
+                Price = 4500,
+                Type = TransactionType.Buy,
+            };
+            Transaction transaction2Vente = new Transaction
+            {
+                Date = new DateOnly(2022, 04, 09),
+                Price = 5350,
+                Type = TransactionType.Sell,
+            };
+
+            Transaction transaction3Achat = new Transaction
+            {
+                Date = new DateOnly(2022, 04, 04),
+                Price = 1800,
+                Type = TransactionType.Buy,
+            };
+            Transaction transaction3Vente = new Transaction
+            {
+                Date = new DateOnly(2022, 04, 08),
+                Price = 2990,
+                Type = TransactionType.Sell,
             };
             context.Transactions.AddRange(
-                 transaction1,
-                 transaction2,
-                 transaction3
+                transaction1Achat,
+                transaction1Vente,
+                transaction2Achat,
+                transaction2Vente,
+                transaction3Achat,
+                transaction3Vente
             );
             context.SaveChanges();
             #endregion
@@ -96,28 +104,28 @@ namespace ExpressVoitures.Data
                 //Id = 1,
                 Type = "Restauration complète",
                 Prix = 7600,
-                TransactionId = transaction1.Id
+                VehiculeId = vehicule1.Id
             };
             Reparation reparation2 = new Reparation
             {
                 //Id = 2,
                 Type = "Roulements des roues avant",
                 Prix = 350,
-                TransactionId = transaction2.Id
+                VehiculeId = vehicule2.Id
             };
             Reparation reparation3 = new Reparation
             {
                 //Id = 3,
                 Type = "Radiateur",
                 Prix = 345,
-                TransactionId = transaction3.Id
+                VehiculeId = vehicule3.Id
             };
             Reparation reparation4 = new Reparation
             {
                 //Id = 4,
                 Type = "freins",
                 Prix = 345,
-                TransactionId = transaction3.Id
+                VehiculeId = vehicule3.Id
             };
 
             context.Reparations.AddRange(
@@ -129,10 +137,10 @@ namespace ExpressVoitures.Data
             context.SaveChanges();
             #endregion
 
-            transaction1.Reparations.Add(reparation1);
-            transaction2.Reparations.Add(reparation2);
-            transaction3.Reparations.Add(reparation3);
-            transaction3.Reparations.Add(reparation4);
+            vehicule1.Reparations.Add(reparation1);
+            vehicule2.Reparations.Add(reparation2);
+            vehicule3.Reparations.Add(reparation3);
+            vehicule3.Reparations.Add(reparation4);
             context.SaveChanges();
         }
     }

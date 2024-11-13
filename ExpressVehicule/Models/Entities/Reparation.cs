@@ -6,7 +6,7 @@
         public string Type { get; set; }
         public double Prix { get; set; }
 
-        public int? TransactionId { get; set; }
-        public Transaction Transaction { get; set; }
+        public int? VehiculeId { get; set; }
+        public Vehicule? Vehicule { get; set; }
     }
 }

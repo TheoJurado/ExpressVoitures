@@ -17,9 +17,9 @@ namespace ExpressVoitures.Controllers
         }
 
 
-        public IActionResult CarIndex(int idTransaction)
+        public IActionResult CarIndex(int idAnnonce)
         {
-            var transaction = _VoitureService.GetTransactionById(idTransaction);
+            var transaction = _VoitureService.GetAnnonceById(idAnnonce);
             if (transaction == null || transaction.Vehicule == null)
             {
                 return RedirectToAction("Index", "Home");
@@ -30,14 +30,14 @@ namespace ExpressVoitures.Controllers
 
         public IActionResult DeletCar(int id)
         {
-            _VoitureService.DeleteTransactionAndDataLinded(id);
+            _VoitureService.DeleteTransactionAndDataLinked(id);
             return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
         public RedirectToActionResult SeeCarIndex(int idToTransfer)
         {
-            return RedirectToAction("CarIndex", new { idTransaction = idToTransfer });
+            return RedirectToAction("CarIndex", new { idAnnonce = idToTransfer });
         }
 
 
