@@ -16,11 +16,9 @@ namespace ExpressVoitures.Models.Entities
 
         public ICollection<Reparation> Reparations { get; set; } = new List<Reparation>();
 
-        //public int? TransactionAchatId { get; set; }
         public Transaction TransactionAchat { get; set; }
 
-        //public int? TransactionVenteId { get; set; }
-        public Transaction TransactionVente { get; set; }
+        public Transaction? TransactionVente { get; set; }
     }
 
     public enum StatutVehicule

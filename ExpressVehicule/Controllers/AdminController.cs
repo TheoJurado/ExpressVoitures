@@ -46,7 +46,7 @@ namespace ExpressVoitures.Controllers
 
             if (ModelState.IsValid)
             {
-                if (model.Photo != null && model.Photo.Length > 4)//2Mo && model.Photo.Length <= 2 * 1024 * 1024
+                if (model.Photo != null && model.Photo.Length > 4)//2Mo
                 {
                     using (var memoryStream = new MemoryStream())
                     {
@@ -59,6 +59,11 @@ namespace ExpressVoitures.Controllers
                     ModelState.AddModelError("Photo", "La taille de l'image ne doit pas dépasser 2 Mo.");
                     return View("AddCar", model);
                 }
+
+                model.TransactionA.Type = TransactionType.Buy;
+                model.TransactionA.VehiculeAchat = model.Vehicule;
+                model.Vehicule.TransactionAchat = model.TransactionA;
+
 
                 _VoitureService.SaveCar(model.Vehicule, [model.Reparation],model.TransactionA, model.Annonce, model.TransactionV);
                 return RedirectToAction("Index", "Home");

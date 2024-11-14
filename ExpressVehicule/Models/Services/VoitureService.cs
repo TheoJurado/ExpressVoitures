@@ -64,6 +64,7 @@ namespace ExpressVoitures.Models.Services
                 annonce.Vehicule = car;
 
             _context.Vehicules.Add(car);
+            _context.Transactions.Add(transactionAchat);
             _context.SaveChanges();
         }
 

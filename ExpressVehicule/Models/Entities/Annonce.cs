@@ -10,6 +10,6 @@
         public double? Price { get; set; }
 
         public int VehiculeId { get; set; }
-        public Vehicule Vehicule { get; set; }
+        public Vehicule? Vehicule { get; set; }
     }
 }
