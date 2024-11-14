@@ -1,3 +1,4 @@
+using ExpressVoitures.Data;
 using ExpressVoitures.Models;
 using ExpressVoitures.Models.Entities;
 using ExpressVoitures.Models.Services;
@@ -10,16 +11,23 @@ namespace ExpressVoitures.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IVoitureService _VoitureService;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger, IVoitureService voitureService)
+        public HomeController(ILogger<HomeController> logger, IVoitureService voitureService, ApplicationDbContext context)
         {
             _logger = logger;
             _VoitureService = voitureService;
+            _context = context;
         }
+
 
         public IActionResult Index()
         {
-            IEnumerable<Annonce> annonces = _VoitureService.GetAllAnnonces();
+            var annonces = _context.Annonces.ToList();
+            foreach (var annonce in annonces)
+            {
+                annonce.Vehicule = _VoitureService.GetCarById(annonce.VehiculeId);
+            }
             return View(annonces);
         }
 

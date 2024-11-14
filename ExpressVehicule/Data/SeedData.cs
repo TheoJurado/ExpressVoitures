@@ -10,7 +10,7 @@ namespace ExpressVoitures.Data
         {
             using var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
-            
+
             if (context.Vehicules.Any() && context.Transactions.Any() && context.Vehicules.Any())
             {
                 return;
@@ -141,6 +141,41 @@ namespace ExpressVoitures.Data
             vehicule2.Reparations.Add(reparation2);
             vehicule3.Reparations.Add(reparation3);
             vehicule3.Reparations.Add(reparation4);
+            context.SaveChanges();
+
+
+            Annonce annonce1 = new Annonce
+            {
+                DateDispoVente = new DateOnly(2022, 04, 07),
+                Description = "",
+                Photo = new byte[] { },
+                Price = transaction1Vente.Price,
+                VehiculeId = vehicule1.Id,
+                Vehicule = vehicule1
+            };
+            Annonce annonce2 = new Annonce
+            {
+                DateDispoVente = new DateOnly(2022, 04, 07),
+                Description = "",
+                Photo = new byte[] { },
+                Price = transaction2Vente.Price,
+                VehiculeId = vehicule2.Id,
+                Vehicule = vehicule2
+            };
+            Annonce annonce3 = new Annonce
+            {
+                DateDispoVente = new DateOnly(2022, 04, 08),
+                Description = "",
+                Photo = new byte[] { },
+                Price = transaction3Vente.Price,
+                VehiculeId = vehicule3.Id,
+                Vehicule = vehicule3
+            };
+            context.Annonces.AddRange(
+                annonce1,
+                annonce2,
+                annonce3
+            );
             context.SaveChanges();
         }
     }
