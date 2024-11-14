@@ -1,0 +1,72 @@
+﻿@model ExpressVoitures.Models.Entities.DataAllInclusive
+@{
+    Layout = "_Layout";
+}
+
+<div asp-validation-summary="All" class="text-danger"></div>
+<form asp-action="CreateCar" method="post" enctype="multipart/form-data">
+    <div class="mb-3 col-6">
+        <label>CodeVIN :</label>
+        <input asp-for="@Model.Vehicule.CodeVin" class="form-control" />
+    </div>
+    <div class="mb-3 col-4">
+        <label>Année :</label>
+        <input asp-for="@Model.Vehicule.Annee" class="form-control" />
+    </div>
+    <div class="mb-3 col-8">
+        <label>Marque :</label>
+        <select asp-for="@Model.Vehicule.Marque" class="form-control"></select>
+    </div>
+    <div class="mb-3 col-4">
+        <label>Model :</label>
+        <select asp-for="@Model.Vehicule.Model" class="form-control"></select>
+    </div>
+    <div class="mb-3 col-8">
+        <label>Finition :</label>
+        <select asp-for="@Model.Vehicule.Finition" class="form-control"></select>
+    </div>
+    <div class="mb-3 col-6">
+        <label>Date d'achat :</label>
+        <input asp-for="@Model.TransactionA.Date" class="form-control" />
+    </div>
+    <div class="mb-3 col-4">
+        <label>Prix d'achat :</label>
+        <input asp-for="@Model.TransactionA.Price" class="form-control" />
+    </div>
+    <div class="mb-3 col-8">
+        <label>Réparation :</label>
+        <select asp-for="@Model.Reparation.Type" class="form-control"></select>
+    </div>
+    <div class="mb-3 col-4">
+        <label>Coût des réparations :</label>
+        <input asp-for="@Model.Reparation.Prix" class="form-control" />
+    </div>
+
+
+    <!--
+    <div class="mb-3 col-8">
+        <label>Date de mise à disposition de vente :</label>
+        <input asp-for="Model.Annonce.DateDispoVente" class="form-control" />
+    </div>
+    <div class="mb-3 col-4">
+        <label>Prix de vente :</label>
+        <input asp-for="Model.Annonce.PrixVente" type="text" class="form-control" />
+    </div>
+    <div class="mb-3 col-8">
+        <label>Date de vente :</label>
+        <input asp-for="Model.Transaction.Date" class="form-control" />
+    </div>
+    -->
+
+    <div class="mb-3 col-8">
+        <label>Description :</label>
+        <input asp-for="@Model.Annonce.Description" class="form-control" />
+    </div>
+    <div class="mb-3 col-8">
+        <label for="Photo">Photo :</label>
+        <input type="file" name="Photo" class="form-control" />
+    </div>
+    <div class="text-center">
+        <input class="btn btn-primary" type="submit" value="Enregistrer" />
+    </div>
+</form>

@@ -1,4 +1,6 @@
 using ExpressVoitures.Data;
+using ExpressVoitures.Models;
+using ExpressVoitures.Models.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,11 +11,16 @@ namespace ExpressVoitures
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
+
+            builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IVoitureService, VoitureService>();
+
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -26,7 +33,7 @@ namespace ExpressVoitures
             if (app.Environment.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
-                app.SeedDatabase(app.Configuration);
+                app.SeedDatabase();
             }
             else
             {

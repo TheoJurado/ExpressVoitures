@@ -1,8 +1,57 @@
-﻿@{
+﻿@using ExpressVoitures.Models.Entities
+@model IEnumerable<ExpressVoitures.Models.Entities.Annonce>
+@{
     ViewData["Title"] = "Home Page";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<br />
+<div id="panel-body">
+    <table class="table table-bordered table-striped table-sm">
+        <thead>
+            <tr>
+                <th><label>Année</label></th>
+                <th><label>Marque</label></th>
+                <th><label>Modèle</label></th>
+                <th><label>Finition</label></th>
+                <th><label>Prix</label></th>
+                <th><label>Description</label></th>
+                <th><label>Photo</label></th>
+                <th><label>Actions</label></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Annonce a in Model)
+            {
+                @if (a.Vehicule.Statut == StatutVehicule.EnVente || (a.DateDispoVente != DateOnly.MinValue && a.Vehicule.Statut != StatutVehicule.Vendu))
+                {
+                <tr>
+                    <td>@a.Vehicule.Annee</td>
+                    <td>@a.Vehicule.Marque</td>
+                    <td>@a.Vehicule.Model</td>
+                    <td>@a.Vehicule.Finition</td>
+                    <td style="text-align:center">@a.Price <label> €</label></td>
+                    <td>@a.Description</td>
+                    <td>
+                        @if (a.Photo != null && a.Photo.Length > 4)
+                        {
+                            <img src="data:image/jpeg;base64,@(Convert.ToBase64String(a.Photo))" alt="Photo" style="max-width: 100px; max-height: 100px;" />
+                        }
+                        else
+                        {
+                            <span>Aucune photo</span>
+                        }
+                    </td>
+                    <td>
+                        <form id="@a.Id" asp-action="SeeCarIndex" asp-controller="CarDetail" method="post">
+                            <input type="hidden" name="idToTransfer" value="@a.Id" />
+                            <button type="submit" class="btn btn-primary">
+                                Information
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <a href="/Admin/AddCar">ajouter une voiture</a>
 </div>
