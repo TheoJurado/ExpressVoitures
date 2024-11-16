@@ -30,7 +30,7 @@ namespace ExpressVoitures.Controllers
 
         public IActionResult DeletCar(int id)
         {
-            _VoitureService.DeleteTransactionAndDataLinked(id);
+            _VoitureService.DeleteAnnonce(id);
             return RedirectToAction("Index", "Home");
         }
 

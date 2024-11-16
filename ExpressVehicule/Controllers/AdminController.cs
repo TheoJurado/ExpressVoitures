@@ -38,6 +38,8 @@ namespace ExpressVoitures.Controllers
         //[HttpPost]
         public async Task<IActionResult> CreateCar(DataAllInclusive model)
         {
+            ModelState.Remove("Vehicule.TransactionAchat");
+
             if (model.Photo == null)
             {
                 ModelState.Remove("Transaction.Photo");

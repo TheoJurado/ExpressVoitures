@@ -19,7 +19,7 @@ namespace ExpressVoitures.Models.Services
 
         void SaveCar(Vehicule car, Reparation[] reparations, Transaction transactionAchat, Annonce annonce, Transaction transactionVente);
 
-        public void DeleteTransactionAndDataLinked(int id);
+        public void DeleteAnnonce(int id);
         public void UpdateCar(int id, Annonce car);
 
     }

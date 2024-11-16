@@ -33,14 +33,28 @@
         <label>Prix d'achat :</label>
         <input asp-for="@Model.TransactionA.Price" class="form-control" />
     </div>
+    <!--
     <div class="mb-3 col-8">
         <label>Réparation :</label>
-        <input asp-for="@Model.Reparation.Type" class="form-control">
+        <input asp-for="Model.Reparation.Type" class="form-control">
     </div>
     <div class="mb-3 col-4">
         <label>Coût des réparations :</label>
-        <input asp-for="@Model.Reparation.Prix" class="form-control" />
+        <input asp-for="Model.Reparation.Prix" class="form-control" />
+    </div>-->
+    <div id="repairs-container">
+        <div class="repair-item">
+            <div class="mb-3 col-8">
+                <label>Réparation :</label>
+                <input name="Reparations[0].Type" class="form-control" />
+            </div>
+            <div class="mb-3 col-4">
+                <label>Coût des réparations :</label>
+                <input name="Reparations[0].Prix" class="form-control" />
+            </div>
+        </div>
     </div>
+    <button type="button" id="add-repair" class="btn btn-secondary">+</button>
 
 
     <div class="mb-3 col-8">

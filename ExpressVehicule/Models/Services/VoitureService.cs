@@ -54,36 +54,50 @@ namespace ExpressVoitures.Models.Services
         public void SaveCar(Vehicule car, Reparation[] reparations, Transaction transactionAchat, Annonce annonce, Transaction transactionVente)
         {
             if (transactionAchat != null)
+            {
+                transactionAchat.VehiculeAchat = car;//
                 car.TransactionAchat = transactionAchat;
+            }
             if (transactionVente != null)
+            {
+                transactionVente.VehiculeVente = car;//
                 car.TransactionVente = transactionVente;
-            if(reparations != null)
-                foreach(Reparation r in reparations)
+            }
+            if (reparations != null)
+                foreach (Reparation r in reparations)
+                {
+                    r.Vehicule = car;
                     car.Reparations.Add(r);
-            if(annonce != null)
-                annonce.Vehicule = car;
+                }
+            if (annonce == null)
+            {
+                Annonce newAnnonce = new Annonce();
+                newAnnonce.Description = "L'annonce n'as pas été correctement enregistrer";
+                annonce = newAnnonce;
+            }
+            annonce.Vehicule = car;
+            double priceAllRepar = 0;
+            foreach (Reparation r in car.Reparations)
+                priceAllRepar += r.Prix;
+            annonce.Price = car.TransactionAchat.Price + priceAllRepar + 500;
 
             _context.Vehicules.Add(car);
             _context.Transactions.Add(transactionAchat);
+            _context.Annonces.Add(annonce);
             _context.SaveChanges();
         }
 
-        public void DeleteTransactionAndDataLinked(int id)
-        {/*
-            Transaction transaction = GetTransactionById(id);
-            if (transaction != null)
+        public void DeleteAnnonce(int id)
+        {
+            Annonce annonce = GetAnnonceById(id);
+            if (annonce != null)
             {
-                foreach (Reparation r in transaction.Reparations.ToList())
-                {
-                    _context.Reparations.Remove(r);
-                }
-                _context.Transactions.Remove(transaction);
-                _context.Vehicules.Remove(GetCarById(transaction.VehiculeId));
+                _context.Annonces.Remove(annonce);
                 _context.SaveChanges();
-            }/**/
+            }
         }
 
-        public void UpdateCar(int id, Annonce car)
+        public void UpdateCar(int id, Annonce annonce)
         {
             //TODO
         }
