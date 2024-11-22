@@ -1,10 +1,13 @@
-﻿@model ExpressVoitures.Models.Entities.DataAllInclusive
+﻿@using ExpressVoitures.Models.Entities
+@model ExpressVoitures.Models.Entities.DataAllInclusive
 @{
     Layout = "_Layout";
 }
 
 <div asp-validation-summary="All" class="text-danger"></div>
-<form asp-action="CreateCar" method="post" enctype="multipart/form-data">
+<form asp-action="SaveUpdateCar" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="@Model.dataAnnonce.Id" />
+    <input type="hidden" asp-for="@Model.dataVehicule.Id" />
     <div class="mb-3 col-6">
         <label>CodeVIN :</label>
         <input asp-for="@Model.dataVehicule.CodeVin" class="form-control" />
@@ -33,17 +36,21 @@
         <label>Prix d'achat :</label>
         <input asp-for="@Model.TransactionA.Price" class="form-control" />
     </div>
+
     <div id="repairs-container">
-        <div class="repair-item">
-            <div class="mb-3 col-8">
+        @for (int i = 0; i < Model.dataReparations.Count; i++)
+        {
+            <div class="repair-item">
+                <div class="mb-3 col-8">
                 <label>Réparation :</label>
-                <input name="dataReparations[0].Type" class="form-control" />
+                    <input name="Reparations[@i].Type" value="@Model.dataReparations[i].Type" class="form-control" />
             </div>
             <div class="mb-3 col-4">
                 <label>Coût des réparations :</label>
-                <input name="dataReparations[0].Prix" class="form-control" />
+                    <input name="Reparations[@i].Prix" value="@Model.dataReparations[i].Prix" class="form-control" />
             </div>
-        </div>
+            </div>
+        }
     </div>
     <button type="button" id="add-repair" class="btn btn-secondary">+</button>
 
@@ -51,10 +58,24 @@
     <div class="mb-3 col-8">
         <label>Description :</label>
         <input asp-for="@Model.dataAnnonce.Description" class="form-control" />
-    </div>
-    <div class="mb-3 col-8">
+    </div><div class="mb-3 col-8">
         <label for="Photo">Photo :</label>
+        @if (Model.dataAnnonce.Photo != null)
+        {
+            <p>Photo actuelle :</p>
+            <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.dataAnnonce.Photo)" alt="Photo" class="img-thumbnail" />
+        }
+        else
+        {
+            <p>Aucune photo trouvée dans le modèle.</p>
+        }
         <input type="file" name="Photo" class="form-control" />
+    </div>
+    <div class="mb-3 col-4">
+        <label>État :</label>
+        <select asp-for="@Model.dataVehicule.Statut" asp-items="Html.GetEnumSelectList<StatutVehicule>()" class="form-control">
+            <option value="">-- Sélectionnez un état --</option>
+        </select>
     </div>
     <div class="text-center">
         <input class="btn btn-primary" type="submit" value="Enregistrer" />
@@ -72,11 +93,11 @@
         newRepair.innerHTML = `
             <div class="mb-3 col-8">
                 <label>Réparation :</label>
-                    <input name="dataReparations[${repairIndex}].Type" class="form-control" />
+                <input name="Reparations[${repairIndex}].Type" class="form-control" />
             </div>
             <div class="mb-3 col-4">
                 <label>Coût des réparations :</label>
-                    <input name="dataReparations[${repairIndex}].Prix" class="form-control" />
+                <input name="Reparations[${repairIndex}].Prix" class="form-control" />
             </div>
         `;
 

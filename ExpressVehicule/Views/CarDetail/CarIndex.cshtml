@@ -15,6 +15,7 @@
                 <th><label>Prix</label></th>
                 <th><label>Description</label></th>
                 <th><label>Photo</label></th>
+                <th><label>Disponibilité</label></th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +38,16 @@
                             <span>Aucune photo</span>
                         }
                     </td>
+                    <td>
+                        @if(Model.Vehicule.Statut == StatutVehicule.EnVente)
+                        {
+                            <span>Immédiate</span>
+                        }
+                        else
+                        {
+                            <span>@Model.DateDispoVente</span>
+                        }
+                    </td>
                 </tr>
             }
             else
@@ -50,11 +61,15 @@
     
     @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
     {
-        @using (Html.BeginForm("DeletCar", "CarDetail", FormMethod.Post))
+        @using (Html.BeginForm("DeleteCar", "CarDetail", FormMethod.Post))
         {
             <input type="hidden" name="id" value="@Model.Id" />
-            <button type="submit" class="btn btn-danger">Supprimer le véhicule</button>
+            <button type="submit" class="btn btn-danger">Supprimer l'annonce</button>
         }
-
+        @using (Html.BeginForm("UpdateCar", "CarDetail", FormMethod.Post))
+        {
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-primary">Modifier l'annonce</button>
+        }
     }
 </div>

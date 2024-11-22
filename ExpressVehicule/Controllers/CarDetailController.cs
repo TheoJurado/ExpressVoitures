@@ -28,10 +28,14 @@ namespace ExpressVoitures.Controllers
             return View(annonce);
         }
 
-        public IActionResult DeletCar(int id)
+        public IActionResult DeleteCar(int id)
         {
             _VoitureService.DeleteAnnonce(id);
             return RedirectToAction("Index", "Home");
+        }
+        public IActionResult UpdateCar(int id)
+        {
+            return RedirectToAction("UpdateCar", "Admin", new { id = id });
         }
 
         [HttpPost]

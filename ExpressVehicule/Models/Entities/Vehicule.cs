@@ -2,7 +2,7 @@
 
 namespace ExpressVoitures.Models.Entities
 {
-    public partial class Vehicule
+    public class Vehicule
     {
         [Key]
         public int Id { get; set; }
@@ -10,6 +10,7 @@ namespace ExpressVoitures.Models.Entities
         public StatutVehicule Statut { get; set; }
 
         public int Annee { get; set; }
+        [Required]
         public string Marque { get; set; }
         public string Model { get; set; }
         public string Finition { get; set; }
