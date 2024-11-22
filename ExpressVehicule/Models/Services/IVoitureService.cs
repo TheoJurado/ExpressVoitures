@@ -17,10 +17,12 @@ namespace ExpressVoitures.Models.Services
 
         public Transaction GetTransactionById(int i);
 
-        void SaveCar(Vehicule car, Reparation[] reparations, Transaction transactionAchat, Annonce annonce, Transaction transactionVente);
+        void SaveCar(Vehicule car, List<Reparation> reparations, Transaction transactionAchat, Annonce annonce, Transaction transactionVente);
 
-        public void DeleteTransactionAndDataLinked(int id);
-        public void UpdateCar(int id, Annonce car);
+        public void DeleteAnnonce(int id);
+        public bool UpdateVehicule(int idCar, Vehicule car);
+        public bool UpdateAnnonce(int idAnnonce, Annonce annonce);
+        public bool UpdateReparations(int vId, List<Reparation> allRepair);
 
     }
 }

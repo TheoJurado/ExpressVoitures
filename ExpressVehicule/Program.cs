@@ -8,7 +8,7 @@ namespace ExpressVoitures
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             
@@ -24,6 +24,7 @@ namespace ExpressVoitures
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
@@ -34,6 +35,10 @@ namespace ExpressVoitures
             {
                 app.UseMigrationsEndPoint();
                 app.SeedDatabase();
+
+                //roles
+                await SeedDatabaseWithRolesAsync(app);
+                await CreateDefaultAdminAsync(app);
             }
             else
             {
@@ -47,6 +52,7 @@ namespace ExpressVoitures
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
@@ -54,7 +60,42 @@ namespace ExpressVoitures
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
 
-            app.Run();
+            await app.RunAsync();
         }
+        #region roles > mail : admin@admin.com / PW : Admin!1
+        private static async Task SeedDatabaseWithRolesAsync(WebApplication app)
+        {
+            using var scope = app.Services.CreateScope();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            var roles = new[] { "Admin", "Moderator", "User" };
+            foreach (var role in roles)
+            {
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
+        }
+
+        private static async Task CreateDefaultAdminAsync(WebApplication app)
+        {
+            using var scope = app.Services.CreateScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var adminEmail = "admin@admin.com";
+            var adminPassword = "Admin!1";
+            
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            if (adminUser == null)
+            {
+                adminUser = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
+                var result = await userManager.CreateAsync(adminUser, adminPassword);
+                if (result.Succeeded)
+                    await userManager.AddToRoleAsync(adminUser, "Admin");/**/
+                else
+                    throw new Exception("La création de l'utilisateur admin a échoué : " + string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
+        }
+        #endregion
     }
 }

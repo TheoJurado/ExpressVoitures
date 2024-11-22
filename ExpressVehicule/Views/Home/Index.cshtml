@@ -21,7 +21,7 @@
         <tbody>
             @foreach (Annonce a in Model)
             {
-                @if (a.Vehicule.Statut == StatutVehicule.EnVente || (a.DateDispoVente != DateOnly.MinValue && a.Vehicule.Statut != StatutVehicule.Vendu))
+                @if (a.Vehicule.Statut == StatutVehicule.EnVente || (a.DateDispoVente != DateOnly.MinValue && a.Vehicule.Statut != StatutVehicule.Vendu) || (User.IsInRole("Admin") || User.IsInRole("Moderator")) )
                 {
                 <tr>
                     <td>@a.Vehicule.Annee</td>
@@ -53,5 +53,8 @@
             }
         </tbody>
     </table>
-    <a href="/Admin/AddCar">ajouter une voiture</a>
+    @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
+    {
+        <a href="/Admin/AddCar">ajouter une voiture</a>
+    }
 </div>

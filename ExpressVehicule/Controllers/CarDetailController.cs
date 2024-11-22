@@ -19,19 +19,23 @@ namespace ExpressVoitures.Controllers
 
         public IActionResult CarIndex(int idAnnonce)
         {
-            var transaction = _VoitureService.GetAnnonceById(idAnnonce);
-            if (transaction == null || transaction.Vehicule == null)
+            var annonce = _VoitureService.GetAnnonceById(idAnnonce);
+            if (annonce == null)
             {
                 return RedirectToAction("Index", "Home");
             }
-
-            return View(transaction);
+            annonce.Vehicule = _VoitureService.GetCarById(annonce.VehiculeId);
+            return View(annonce);
         }
 
-        public IActionResult DeletCar(int id)
+        public IActionResult DeleteCar(int id)
         {
-            _VoitureService.DeleteTransactionAndDataLinked(id);
+            _VoitureService.DeleteAnnonce(id);
             return RedirectToAction("Index", "Home");
+        }
+        public IActionResult UpdateCar(int id)
+        {
+            return RedirectToAction("UpdateCar", "Admin", new { id = id });
         }
 
         [HttpPost]

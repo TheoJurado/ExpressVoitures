@@ -22,13 +22,7 @@ namespace ExpressVoitures.Controllers
         }
 
         public IActionResult AddCar()
-        {/*
-            //ViewBag.Annees = new SelectList(_context.Vehicules.Select(v => v.Annee).Distinct().ToList());
-            ViewBag.Marques = new SelectList(_context.Vehicules.Select(v => v.Marque).Distinct().ToList());
-            ViewBag.Models = new SelectList(_context.Vehicules.Select(v => v.Model).Distinct().ToList());
-            ViewBag.Finitions = new SelectList(_context.Vehicules.Select(v => v.Finition).Distinct().ToList());
-
-            ViewBag.Reparations = new SelectList(_context.Reparations.Select(r => r.Type).Distinct().ToList());/**/
+        {
 
             return View();
         }
@@ -38,20 +32,36 @@ namespace ExpressVoitures.Controllers
         //[HttpPost]
         public async Task<IActionResult> CreateCar(DataAllInclusive model)
         {
+            //ModelState.Remove("Vehicule.TransactionAchat");
+            ModelState.Remove("dataVehicule.TransactionAchat");
+
             if (model.Photo == null)
             {
                 ModelState.Remove("Transaction.Photo");
                 ModelState.Remove("DataAllInclusive.Transaction.Photo");
             }/**/
 
+            model.TransactionA.Type = TransactionType.Buy;
+            model.TransactionA.VehiculeAchat = model.dataVehicule;
+            model.dataVehicule.TransactionAchat = model.TransactionA;
+            /*
+            foreach (var state in ModelState)
+            {
+                if (state.Value.Errors.Count > 0)
+                {
+                    string errorMessage = $"Key: {state.Key}, Error: {string.Join(", ", state.Value.Errors.Select(e => e.ErrorMessage))}";
+                    Console.WriteLine(errorMessage);
+                }
+            }/**/
+
             if (ModelState.IsValid)
             {
-                if (model.Photo != null && model.Photo.Length > 4)//2Mo && model.Photo.Length <= 2 * 1024 * 1024
+                if (model.Photo != null && model.Photo.Length > 4)//2Mo
                 {
                     using (var memoryStream = new MemoryStream())
                     {
                         await model.Photo.CopyToAsync(memoryStream);
-                        model.Annonce.Photo = memoryStream.ToArray();
+                        model.dataAnnonce.Photo = memoryStream.ToArray();
                     }
                 }
                 else
@@ -60,18 +70,70 @@ namespace ExpressVoitures.Controllers
                     return View("AddCar", model);
                 }
 
-                _VoitureService.SaveCar(model.Vehicule, [model.Reparation],model.TransactionA, model.Annonce, model.TransactionV);
+
+
+                _VoitureService.SaveCar(model.dataVehicule, model.dataReparations,model.TransactionA, model.dataAnnonce, model.TransactionV);
                 return RedirectToAction("Index", "Home");
             }
             return View("AddCar", model);
         }
-        /*
-        [HttpGet]
-        public IActionResult GetModelsByMarque(string marque)
+
+        public IActionResult UpdateCar(int id)
         {
-            var models = _context.Vehicules.Where(v => v.Marque == marque).Select(v => v.Model).Distinct().ToList();
-            return Json(models);
-        }/**/
+            var annonce = _VoitureService.GetAnnonceById(id);
+            if(annonce == null)
+                return NotFound();
+
+            if (annonce.Vehicule == null)
+                throw new NullReferenceException("Le véhicule associé à l'annonce est null.");
+            if (annonce.Vehicule.TransactionAchat == null)
+                throw new NullReferenceException("La transaction d'achat associée au véhicule est null.");
+
+            var allData = new DataAllInclusive
+            {
+                dataAnnonce = annonce,
+                dataVehicule = annonce.Vehicule,
+                TransactionA = annonce.Vehicule.TransactionAchat ?? new Transaction(),
+                TransactionV = annonce.Vehicule.TransactionVente ?? new Transaction(),
+                dataReparations = annonce.Vehicule.Reparations?.ToList() ?? new List<Reparation>(),
+                Photo = annonce.Photo != null
+                    ? VoitureService.ByteArrayToFormFile(annonce.Photo, "photo.jpg", "image/jpeg")
+                    : null
+            };/**/
+            if (annonce.Photo == null || annonce.Photo.Length == 0)
+                Console.WriteLine("Aucune photo disponible dans l'annonce.");
+            else
+                Console.WriteLine($"Photo trouvée avec une taille de {annonce.Photo.Length} octets.");
+            if (allData.Photo != null)
+                Console.WriteLine($"Fichier créé : {allData.Photo.FileName}, Taille : {allData.Photo.Length} octets");
+            else
+                Console.WriteLine("La conversion en IFormFile a échoué.");
+            /*
+            var allData = new DataAllInclusive();
+            allData.dataAnnonce = annonce;
+            allData.dataVehicule = annonce.Vehicule;
+            allData.TransactionA = annonce.Vehicule.TransactionAchat;//l'erreur cible cette ligne
+            allData.TransactionV = annonce.Vehicule.TransactionVente;
+            allData.dataReparations = annonce.Vehicule.Reparations.ToList();
+            if (annonce.Photo != null)
+                allData.Photo = VoitureService.ByteArrayToFormFile(annonce.Photo, "photo.jpg", "image/jpeg");
+            /**/
+            return View(allData);
+        }
+
+        [HttpPost]
+        public IActionResult SaveUpdateCar(DataAllInclusive model)
+        {
+            if (!_VoitureService.UpdateAnnonce(model.dataAnnonce.Id, model.dataAnnonce))
+                return BadRequest("Erreur lors de la mise à jour de l'annonce.");
+            if (!_VoitureService.UpdateVehicule(model.dataVehicule.Id, model.dataVehicule))
+                return BadRequest("Erreur lors de la mise à jour du véhicule.");
+            if (!_VoitureService.UpdateReparations(model.dataVehicule.Id, model.dataReparations))
+                return BadRequest("Erreur lors de la mise à jour des réparations.");
+            /**/
+
+            return RedirectToAction("Index", "Home");
+        }
 
         // GET: AdminController
         public ActionResult Index()
