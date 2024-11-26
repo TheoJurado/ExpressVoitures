@@ -1,8 +1,9 @@
-﻿namespace ExpressVoitures.Models.Entities
+﻿using ExpressVoitures.Models.Entities;
+
+namespace ExpressVoitures.Models.ViewModels
 {
     public class DataAllInclusive
     {
-        public int Id { get; set; }
         public Annonce dataAnnonce { get; set; } = new Annonce();
         public Transaction TransactionA { get; set; } = new Transaction();
         public Transaction? TransactionV { get; set; }

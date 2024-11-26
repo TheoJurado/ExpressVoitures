@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpressVoitures.Data;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using ExpressVoitures.Models.ViewModels;
 
 namespace ExpressVoitures.Controllers
 {
+    [Authorize(Roles = "Admin,Moderator")]
     public class AdminController : Controller
     {
         private readonly IVoitureService _VoitureService;
@@ -122,7 +124,7 @@ namespace ExpressVoitures.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveUpdateCar(DataAllInclusive model)
+        public IActionResult SaveUpdateCar([FromForm]DataAllInclusive model)
         {
             if (!_VoitureService.UpdateAnnonce(model.dataAnnonce.Id, model.dataAnnonce))
                 return BadRequest("Erreur lors de la mise à jour de l'annonce.");

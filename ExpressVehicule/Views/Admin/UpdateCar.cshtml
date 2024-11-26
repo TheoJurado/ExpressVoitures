@@ -1,7 +1,19 @@
-﻿@using ExpressVoitures.Models.Entities
-@model ExpressVoitures.Models.Entities.DataAllInclusive
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@using ExpressVoitures.Models.Entities
+@model ExpressVoitures.Models.ViewModels.DataAllInclusive
 @{
     Layout = "_Layout";
+}
+@{
+    var user = await UserManager.GetUserAsync(User);
+    if (user == null || (!await UserManager.IsInRoleAsync(user, "Admin") && !await UserManager.IsInRoleAsync(user, "Moderator")))
+    {
+        <script type="text/javascript">
+            window.location.href = '@Url.Action("Index", "Home")';
+        </script>
+    }
 }
 
 <div asp-validation-summary="All" class="text-danger"></div>
@@ -43,11 +55,11 @@
             <div class="repair-item">
                 <div class="mb-3 col-8">
                 <label>Réparation :</label>
-                    <input name="Reparations[@i].Type" value="@Model.dataReparations[i].Type" class="form-control" />
+                    <input name="dataReparations[@i].Type" value="@Model.dataReparations[i].Type" class="form-control" />
             </div>
             <div class="mb-3 col-4">
                 <label>Coût des réparations :</label>
-                    <input name="Reparations[@i].Prix" value="@Model.dataReparations[i].Prix" class="form-control" />
+                    <input name="dataReparations[@i].Prix" value="@Model.dataReparations[i].Prix" class="form-control" />
             </div>
             </div>
         }
@@ -83,7 +95,7 @@
 </form>
 
 <script>
-    let repairIndex = 1; // repair Index
+    let repairIndex = @Model.dataReparations.Count; // repair Index
     document.getElementById('add-repair').addEventListener('click', function () {
         const container = document.getElementById('repairs-container');
 
@@ -93,11 +105,11 @@
         newRepair.innerHTML = `
             <div class="mb-3 col-8">
                 <label>Réparation :</label>
-                <input name="Reparations[${repairIndex}].Type" class="form-control" />
+                    <input name="dataReparations[${repairIndex}].Type" class="form-control" />
             </div>
             <div class="mb-3 col-4">
                 <label>Coût des réparations :</label>
-                <input name="Reparations[${repairIndex}].Prix" class="form-control" />
+                    <input name="dataReparations[${repairIndex}].Prix" class="form-control" />
             </div>
         `;
 

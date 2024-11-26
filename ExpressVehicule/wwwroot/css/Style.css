@@ -1,0 +1,117 @@
+﻿
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+#panel-body {
+    padding: 2rem;
+    max-width: 90%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+    #panel-body h2 {
+        font-size: 2rem;
+        font-style: italic;
+        color: #444;
+        margin-bottom: 2rem;
+        font-family: serif;
+    }
+
+table {
+    display: none;
+}
+
+/* Layout for the car cards */
+.car-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+    margin: 0 auto;
+    padding: 0;
+    width: 100%;
+}
+
+.car-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .car-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .car-card img {
+        flex: 1;
+        max-width: 150px;
+        height: auto;
+        object-fit: cover;
+        border-right: 1px solid #ddd;
+    }
+
+.car-details {
+    flex: 2;
+    padding: 1rem;
+    text-align: left;
+}
+
+    .car-details h3 {
+        font-size: 1.3rem;
+        margin: 0;
+        color: #333;
+    }
+
+    .car-details p {
+        margin: 0.5rem 0;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .car-details .price {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #444;
+    }
+
+    .car-details button {
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        background: #007BFF;
+        border: none;
+        border-radius: 4px;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+        .car-details button:hover {
+            background: #0056b3;
+        }
+        
+.add-car-btn {
+    display: inline-block;
+    margin: 2rem auto;
+    padding: 1rem 2rem;
+    background: #FFD700;
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 5px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s, transform 0.2s;
+}
+
+    .add-car-btn:hover {
+        background: #ffc107;
+        transform: scale(1.05);
+    }

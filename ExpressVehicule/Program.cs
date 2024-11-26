@@ -3,6 +3,7 @@ using ExpressVoitures.Models;
 using ExpressVoitures.Models.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 namespace ExpressVoitures
 {
@@ -28,6 +29,11 @@ namespace ExpressVoitures
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/Home/Index";//if no admin, go to : /Home/Index
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -47,8 +53,14 @@ namespace ExpressVoitures
                 app.UseHsts();
             }
 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Ressources")), RequestPath = "/Ressources"
+            });
 
             app.UseRouting();
 

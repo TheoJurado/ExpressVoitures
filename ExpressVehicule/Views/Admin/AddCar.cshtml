@@ -1,8 +1,19 @@
-﻿@model ExpressVoitures.Models.Entities.DataAllInclusive
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@model ExpressVoitures.Models.ViewModels.DataAllInclusive
 @{
     Layout = "_Layout";
 }
-
+@{
+    var user = await UserManager.GetUserAsync(User);
+    if (user == null || (!await UserManager.IsInRoleAsync(user, "Admin") && !await UserManager.IsInRoleAsync(user, "Moderator")))
+    {
+        <script type="text/javascript">
+            window.location.href = '@Url.Action("Index", "Home")';
+        </script>
+    }
+}
 <div asp-validation-summary="All" class="text-danger"></div>
 <form asp-action="CreateCar" method="post" enctype="multipart/form-data">
     <div class="mb-3 col-6">
