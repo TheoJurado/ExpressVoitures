@@ -14,7 +14,7 @@
 .vehicle-details {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     gap: 2rem;
     width: 100%;
 }
@@ -26,6 +26,12 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         object-fit: cover;
     }
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
 
 .details-container {
     flex: 1;
@@ -51,39 +57,33 @@
         font-size: 1.5rem;
         font-weight: bold;
         color: #007BFF;
-        margin-top: 1rem;
+        margin-top: 0rem;
     }
 
 .actions-container {
-    margin-top: 2rem;
+    margin-bottom: 4rem;
     display: flex;
+    justify-content: flex-start;
     gap: 1rem;
 }
 
-    .actions-container button {
-        padding: 0.7rem 1.5rem;
+    .text-link {
+        background: none;
         border: none;
-        border-radius: 4px;
-        color: #fff;
+        color: inherit;
+        text-decoration: underline;
         cursor: pointer;
-        transition: background 0.3s;
+        font-size: inherit;
+        padding: 0;
     }
 
-    .actions-container .btn-danger {
-        background: #dc3545;
+    .delete-link {
+        color: #D70000;
     }
 
-        .actions-container .btn-danger:hover {
-            background: #b02a37;
-        }
-
-    .actions-container .btn-primary {
-        background: #007bff;
+    .update-link {
+        color: #929292;
     }
-
-        .actions-container .btn-primary:hover {
-            background: #0056b3;
-        }
 
 .return-link {
     margin: 1rem 0;

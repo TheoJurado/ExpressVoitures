@@ -44,17 +44,9 @@ namespace ExpressVoitures.Controllers
             }/**/
 
             model.TransactionA.Type = TransactionType.Buy;
-            model.TransactionA.VehiculeAchat = model.dataVehicule;
+            model.TransactionA.VehiculeLinked = model.dataVehicule;
             model.dataVehicule.TransactionAchat = model.TransactionA;
-            /*
-            foreach (var state in ModelState)
-            {
-                if (state.Value.Errors.Count > 0)
-                {
-                    string errorMessage = $"Key: {state.Key}, Error: {string.Join(", ", state.Value.Errors.Select(e => e.ErrorMessage))}";
-                    Console.WriteLine(errorMessage);
-                }
-            }/**/
+            
 
             if (ModelState.IsValid)
             {
@@ -110,25 +102,20 @@ namespace ExpressVoitures.Controllers
                 Console.WriteLine($"Fichier créé : {allData.Photo.FileName}, Taille : {allData.Photo.Length} octets");
             else
                 Console.WriteLine("La conversion en IFormFile a échoué.");
-            /*
-            var allData = new DataAllInclusive();
-            allData.dataAnnonce = annonce;
-            allData.dataVehicule = annonce.Vehicule;
-            allData.TransactionA = annonce.Vehicule.TransactionAchat;//l'erreur cible cette ligne
-            allData.TransactionV = annonce.Vehicule.TransactionVente;
-            allData.dataReparations = annonce.Vehicule.Reparations.ToList();
-            if (annonce.Photo != null)
-                allData.Photo = VoitureService.ByteArrayToFormFile(annonce.Photo, "photo.jpg", "image/jpeg");
-            /**/
+            
             return View(allData);
         }
 
         [HttpPost]
         public IActionResult SaveUpdateCar([FromForm]DataAllInclusive model)
         {
-            if (!_VoitureService.UpdateAnnonce(model.dataAnnonce.Id, model.dataAnnonce))
+            int price = ((int)model.TransactionA.Price) + 500;
+            foreach (Reparation rep in model.dataReparations)
+                price += ((int)rep.Prix);
+
+            if (!_VoitureService.UpdateAnnonce(model.dataAnnonce.Id, model.dataAnnonce, price))
                 return BadRequest("Erreur lors de la mise à jour de l'annonce.");
-            if (!_VoitureService.UpdateVehicule(model.dataVehicule.Id, model.dataVehicule))
+            if (!_VoitureService.UpdateVehicule(model.dataVehicule.Id, model.dataVehicule, model.isAdministrator))
                 return BadRequest("Erreur lors de la mise à jour du véhicule.");
             if (!_VoitureService.UpdateReparations(model.dataVehicule.Id, model.dataReparations))
                 return BadRequest("Erreur lors de la mise à jour des réparations.");

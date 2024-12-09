@@ -45,6 +45,7 @@ namespace ExpressVoitures
                 //roles
                 await SeedDatabaseWithRolesAsync(app);
                 await CreateDefaultAdminAsync(app);
+                await CreateDefaultMechaAsync(app);
             }
             else
             {
@@ -104,6 +105,25 @@ namespace ExpressVoitures
                 var result = await userManager.CreateAsync(adminUser, adminPassword);
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(adminUser, "Admin");/**/
+                else
+                    throw new Exception("La création de l'utilisateur admin a échoué : " + string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
+        }
+
+        private static async Task CreateDefaultMechaAsync(WebApplication app)
+        {
+            using var scope = app.Services.CreateScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var adminEmail = "mod@admin.com";
+            var adminPassword = "Moderator!1";
+
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            if (adminUser == null)
+            {
+                adminUser = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
+                var result = await userManager.CreateAsync(adminUser, adminPassword);
+                if (result.Succeeded)
+                    await userManager.AddToRoleAsync(adminUser, "Moderator");/**/
                 else
                     throw new Exception("La création de l'utilisateur admin a échoué : " + string.Join(", ", result.Errors.Select(e => e.Description)));
             }

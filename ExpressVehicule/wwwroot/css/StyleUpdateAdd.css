@@ -1,0 +1,91 @@
+﻿body {
+    font-family: 'Georgia', serif;
+    background-color: #f9f7f4;
+    color: #5c423a;
+    margin: 0;
+    padding: 0;
+}
+
+#theForm form {
+    max-width: 600px;
+    margin: 50px auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px 40px;
+    margin-top: 0px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 55px;
+    font-family: serif;
+    font-style: italic;
+    color: #7d5a50;
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    margin-top: 25px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="file"],
+select,
+#repairs-container input,
+#repairs-container select,
+#repairs-container textarea,
+textarea {
+    width: 1000%;
+    max-width: 500px;
+    padding: 15px;
+    margin-bottom: 40px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+button,
+input[type="submit"] {
+    background-color: #c08c68;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background-color: #a06c48;
+}
+
+.img-thumbnail {
+    max-width: 100%;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+#add-repair {
+    display: inline-block;
+    font-size: 14px;
+    background-color: #f1f1f1;
+    color: #7d5a50;
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    margin-top: -25px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#add-repair:hover {
+    background-color: #ddd;
+}

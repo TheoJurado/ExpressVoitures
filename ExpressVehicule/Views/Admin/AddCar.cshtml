@@ -7,13 +7,22 @@
 }
 @{
     var user = await UserManager.GetUserAsync(User);
-    if (user == null || (!await UserManager.IsInRoleAsync(user, "Admin") && !await UserManager.IsInRoleAsync(user, "Moderator")))
+    if (user == null || (!await UserManager.IsInRoleAsync(user, "Admin")))
     {
         <script type="text/javascript">
             window.location.href = '@Url.Action("Index", "Home")';
         </script>
     }
 }
+
+<head>
+    <title>ExpressVoitures</title>
+    <link rel="stylesheet" href="@Url.Content("~/css/StyleUpdateAdd.css")">
+</head>
+
+<h1>Ajouter une voiture</h1>
+
+<div id="theForm">
 <div asp-validation-summary="All" class="text-danger"></div>
 <form asp-action="CreateCar" method="post" enctype="multipart/form-data">
     <div class="mb-3 col-6">
@@ -71,6 +80,7 @@
         <input class="btn btn-primary" type="submit" value="Enregistrer" />
     </div>
 </form>
+</div>
 
 <script>
     let repairIndex = 1; // repair Index

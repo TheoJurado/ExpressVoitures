@@ -10,5 +10,6 @@ namespace ExpressVoitures.Models.ViewModels
         public List<Reparation> dataReparations { get; set; } = new List<Reparation>();
         public Vehicule dataVehicule { get; set; } = new Vehicule();
         public IFormFile? Photo { get; set; }
+        public bool isAdministrator { get; set; } = false;
     }
 }

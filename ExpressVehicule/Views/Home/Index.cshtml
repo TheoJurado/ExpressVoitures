@@ -10,7 +10,7 @@
 <br />
 <div id="panel-body">
     <h2>Nos voitures</h2>
-    @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
+    @if (User.IsInRole("Admin"))
     {
         <a href="/Admin/AddCar" class="add-car-btn">+ Ajouter une voiture</a>
     }

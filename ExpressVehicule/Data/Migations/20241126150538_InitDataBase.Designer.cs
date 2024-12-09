@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpressVoitures.Data.Migations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241113155946_UpdateAnnonceVehiculeRelation")]
-    partial class UpdateAnnonceVehiculeRelation
+    [Migration("20241126150538_InitDataBase")]
+    partial class InitDataBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,20 +24,6 @@ namespace ExpressVoitures.Data.Migations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ExpressVoitures.Models.Entities.Admin", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("MdP")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Admins");
-                });
 
             modelBuilder.Entity("ExpressVoitures.Models.Entities.Annonce", b =>
                 {
@@ -463,8 +449,7 @@ namespace ExpressVoitures.Data.Migations
                     b.Navigation("TransactionAchat")
                         .IsRequired();
 
-                    b.Navigation("TransactionVente")
-                        .IsRequired();
+                    b.Navigation("TransactionVente");
                 });
 #pragma warning restore 612, 618
         }

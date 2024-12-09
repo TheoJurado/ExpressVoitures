@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpressVoitures.Data.Migations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241113134150_InitDataBase")]
-    partial class InitDataBase
+    [Migration("20241207162259_BetterTransaction")]
+    partial class BetterTransaction
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,20 +24,6 @@ namespace ExpressVoitures.Data.Migations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ExpressVoitures.Models.Entities.Admin", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("MdP")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Admins");
-                });
 
             modelBuilder.Entity("ExpressVoitures.Models.Entities.Annonce", b =>
                 {
@@ -108,24 +94,17 @@ namespace ExpressVoitures.Data.Migations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int?>("TransactionAchatId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TransactionVenteId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("VehiculeLinkedId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TransactionAchatId")
+                    b.HasIndex("VehiculeLinkedId")
                         .IsUnique()
-                        .HasFilter("[TransactionAchatId] IS NOT NULL");
-
-                    b.HasIndex("TransactionVenteId")
-                        .IsUnique()
-                        .HasFilter("[TransactionVenteId] IS NOT NULL");
+                        .HasFilter("[VehiculeLinkedId] IS NOT NULL");
 
                     b.ToTable("Transactions");
                 });
@@ -160,7 +139,12 @@ namespace ExpressVoitures.Data.Migations
                     b.Property<int>("Statut")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TransactionVenteId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TransactionVenteId");
 
                     b.ToTable("Vehicules");
                 });
@@ -390,19 +374,21 @@ namespace ExpressVoitures.Data.Migations
 
             modelBuilder.Entity("ExpressVoitures.Models.Entities.Transaction", b =>
                 {
-                    b.HasOne("ExpressVoitures.Models.Entities.Vehicule", "VehiculeAchat")
+                    b.HasOne("ExpressVoitures.Models.Entities.Vehicule", "VehiculeLinked")
                         .WithOne("TransactionAchat")
-                        .HasForeignKey("ExpressVoitures.Models.Entities.Transaction", "TransactionAchatId")
+                        .HasForeignKey("ExpressVoitures.Models.Entities.Transaction", "VehiculeLinkedId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("ExpressVoitures.Models.Entities.Vehicule", "VehiculeVente")
-                        .WithOne("TransactionVente")
-                        .HasForeignKey("ExpressVoitures.Models.Entities.Transaction", "TransactionVenteId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                    b.Navigation("VehiculeLinked");
+                });
 
-                    b.Navigation("VehiculeAchat");
+            modelBuilder.Entity("ExpressVoitures.Models.Entities.Vehicule", b =>
+                {
+                    b.HasOne("ExpressVoitures.Models.Entities.Transaction", "TransactionVente")
+                        .WithMany()
+                        .HasForeignKey("TransactionVenteId");
 
-                    b.Navigation("VehiculeVente");
+                    b.Navigation("TransactionVente");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -461,9 +447,6 @@ namespace ExpressVoitures.Data.Migations
                     b.Navigation("Reparations");
 
                     b.Navigation("TransactionAchat")
-                        .IsRequired();
-
-                    b.Navigation("TransactionVente")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

@@ -16,42 +16,104 @@
     }
 }
 
+<head>
+    <title>ExpressVoitures</title>
+    <link rel="stylesheet" href="@Url.Content("~/css/StyleUpdateAdd.css")">
+</head>
+
+<h1>Modifier la voiture</h1>
+
+<div id="theForm">
 <div asp-validation-summary="All" class="text-danger"></div>
 <form asp-action="SaveUpdateCar" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="@Model.dataAnnonce.Id" />
     <input type="hidden" asp-for="@Model.dataVehicule.Id" />
+    @if (user != null && await UserManager.IsInRoleAsync(user, "Admin"))
+    {
+        <input type="hidden" asp-for="@Model.isAdministrator" value="true" />
+    }
     <div class="mb-3 col-6">
         <label>CodeVIN :</label>
-        <input asp-for="@Model.dataVehicule.CodeVin" class="form-control" />
+        @if (user != null && await UserManager.IsInRoleAsync(user, "Admin"))
+        {
+            <input asp-for="@Model.dataVehicule.CodeVin" class="form-control" />
+        }
+        else
+        {
+            <input asp-for="@Model.dataVehicule.CodeVin" class="form-control" readonly />
+        }
     </div>
     <div class="mb-3 col-4">
         <label>Année :</label>
-        <input asp-for="@Model.dataVehicule.Annee" class="form-control" />
+        @if (user != null && await UserManager.IsInRoleAsync(user, "Admin"))
+        {
+            <input asp-for="@Model.dataVehicule.Annee" class="form-control" />
+        }
+        else
+        {
+            <input asp-for="@Model.dataVehicule.Annee" class="form-control" readonly />
+        }
     </div>
     <div class="mb-3 col-8">
         <label>Marque :</label>
-        <input asp-for="@Model.dataVehicule.Marque" class="form-control">
+        @if (user != null && await UserManager.IsInRoleAsync(user, "Admin"))
+        {
+            <input asp-for="@Model.dataVehicule.Marque" class="form-control">
+        }
+        else
+        {
+            <input asp-for="@Model.dataVehicule.Marque" class="form-control" readonly>
+        }
     </div>
     <div class="mb-3 col-4">
         <label>Model :</label>
-        <input asp-for="@Model.dataVehicule.Model" class="form-control">
+        @if (user != null && await UserManager.IsInRoleAsync(user, "Admin"))
+        {
+            <input asp-for="@Model.dataVehicule.Model" class="form-control">
+        }
+        else
+        {
+            <input asp-for="@Model.dataVehicule.Model" class="form-control" readonly>
+        }
     </div>
     <div class="mb-3 col-8">
         <label>Finition :</label>
-        <input asp-for="@Model.dataVehicule.Finition" class="form-control">
+        @if (user != null && await UserManager.IsInRoleAsync(user, "Admin"))
+        {
+            <input asp-for="@Model.dataVehicule.Finition" class="form-control">
+        }
+        else
+        {
+            <input asp-for="@Model.dataVehicule.Finition" class="form-control" readonly>
+        }
     </div>
     <div class="mb-3 col-6">
         <label>Date d'achat :</label>
-        <input asp-for="@Model.TransactionA.Date" class="form-control" />
+        @if (user != null && await UserManager.IsInRoleAsync(user, "Admin"))
+        {
+            <input asp-for="@Model.TransactionA.Date" class="form-control" />
+        }
+        else
+        {
+            <input asp-for="@Model.TransactionA.Date" class="form-control" readonly />
+        }
     </div>
     <div class="mb-3 col-4">
         <label>Prix d'achat :</label>
-        <input asp-for="@Model.TransactionA.Price" class="form-control" />
+        @if (user != null && await UserManager.IsInRoleAsync(user, "Admin"))
+        {
+            <input asp-for="@Model.TransactionA.Price" class="form-control" />
+        }
+        else
+        {
+            <input asp-for="@Model.TransactionA.Price" class="form-control" readonly />
+        }
     </div>
 
     <div id="repairs-container">
         @for (int i = 0; i < Model.dataReparations.Count; i++)
         {
+            <input type="hidden" asp-for="@Model.dataReparations[i].Id" />
             <div class="repair-item">
                 <div class="mb-3 col-8">
                 <label>Réparation :</label>
@@ -93,6 +155,7 @@
         <input class="btn btn-primary" type="submit" value="Enregistrer" />
     </div>
 </form>
+</div>
 
 <script>
     let repairIndex = @Model.dataReparations.Count; // repair Index

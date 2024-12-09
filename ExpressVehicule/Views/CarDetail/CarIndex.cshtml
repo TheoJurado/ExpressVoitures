@@ -23,41 +23,46 @@
                 <img src="@Url.Content("~/Ressources/placeholder.jpg")" alt="Aucune photo disponible" />
             }
 
-            <div class="details-container">
-                <p class="price"><strong>Prix :</strong> @Model.Price €</p>
-                <p><strong>Année :</strong> @Model.Vehicule.Annee</p>
-                <h2>@Model.Vehicule.Marque @Model.Vehicule.Model</h2>
-                <p><strong>Finition :</strong> @Model.Vehicule.Finition</p>
-                <p><strong>Description :</strong> @Model.Description</p>
-                <p>
-                    <strong>Disponibilité :</strong>
-                    @if (Model.Vehicule.Statut == StatutVehicule.EnVente)
-                    {
-                        <span>Immédiate</span>
-                    }
-                    else
-                    {
-                        @Model.DateDispoVente
-                    }
-                </p>
+            <div class="content-container">
+                @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                {
+                    <div class="actions-container">
+                        @using (Html.BeginForm("UpdateCar", "CarDetail", FormMethod.Post))
+                        {
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="submit" class="text-link update-link">modifier</button>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            @using (Html.BeginForm("DeleteCar", "CarDetail", FormMethod.Post))
+                            {
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <button type="submit" class="text-link delete-link">supprimer</button>
+                            }
+                        }
+                    </div>
+                }
+
+                <div class="details-container">
+                    <p class="price"><strong>Prix :</strong> @Model.Price €</p>
+                    <p><strong>Année :</strong> @Model.Vehicule.Annee</p>
+                    <h2>@Model.Vehicule.Marque @Model.Vehicule.Model</h2>
+                    <p><strong>Finition :</strong> @Model.Vehicule.Finition</p>
+                    <p><strong>Description :</strong> @Model.Description</p>
+                    <p>
+                        <strong>Disponibilité :</strong>
+                        @if (Model.Vehicule.Statut == StatutVehicule.EnVente)
+                        {
+                            <span>Immédiate</span>
+                        }
+                        else
+                        {
+                            @Model.DateDispoVente
+                        }
+                    </p>
+                </div>
             </div>
         </div>
-
-        @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
-        {
-            <div class="actions-container">
-                @using (Html.BeginForm("DeleteCar", "CarDetail", FormMethod.Post))
-                {
-                    <input type="hidden" name="id" value="@Model.Id" />
-                    <button type="submit" class="btn btn-danger">Supprimer l'annonce</button>
-                }
-                @using (Html.BeginForm("UpdateCar", "CarDetail", FormMethod.Post))
-                {
-                    <input type="hidden" name="id" value="@Model.Id" />
-                    <button type="submit" class="btn btn-primary">Modifier l'annonce</button>
-                }
-            </div>
-        }
     }
     else
     {

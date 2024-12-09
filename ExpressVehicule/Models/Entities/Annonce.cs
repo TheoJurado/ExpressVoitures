@@ -1,8 +1,10 @@
-﻿namespace ExpressVoitures.Models.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ExpressVoitures.Models.Entities
 {
     public partial class Annonce
     {
-
+        [Key]
         public int Id { get; set; }
         public DateOnly DateDispoVente { get; set; }
         public string? Description { get; set; }

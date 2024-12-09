@@ -67,14 +67,14 @@ namespace ExpressVoitures.Models.Services
         {
             if (transactionAchat != null)
             {
-                transactionAchat.VehiculeAchat = car;
+                transactionAchat.VehiculeLinked = car;
                 car.TransactionAchat = transactionAchat;
-            }
+            }/*
             if (transactionVente != null)
             {
                 transactionVente.VehiculeVente = car;
                 car.TransactionVente = transactionVente;
-            }
+            }/**/
             if (reparations != null)
                 foreach (Reparation r in reparations)
                 {
@@ -109,26 +109,29 @@ namespace ExpressVoitures.Models.Services
             }
         }
 
-        public bool UpdateVehicule(int idCar, Vehicule updatedVehicule)
+        public bool UpdateVehicule(int idCar, Vehicule updatedVehicule, bool isAdmin = false)
         {
             var existingVehicule = GetCarById(idCar);
 
             if (existingVehicule == null)
                 return false;
 
-            existingVehicule.CodeVin = updatedVehicule.CodeVin;
             existingVehicule.Statut = updatedVehicule.Statut;
-            existingVehicule.Annee = updatedVehicule.Annee;
-            existingVehicule.Marque = updatedVehicule.Marque;
-            existingVehicule.Model = updatedVehicule.Model;
-            existingVehicule.Finition = updatedVehicule.Finition;
+            if (isAdmin)
+            {
+                existingVehicule.CodeVin = updatedVehicule.CodeVin;
+                existingVehicule.Annee = updatedVehicule.Annee;
+                existingVehicule.Marque = updatedVehicule.Marque;
+                existingVehicule.Model = updatedVehicule.Model;
+                existingVehicule.Finition = updatedVehicule.Finition;
+            }
 
             _context.Vehicules.Update(existingVehicule);
             _context.SaveChanges();
             return true;
         }
 
-        public bool UpdateAnnonce(int idAnnonce, Annonce updatedAnnonce)
+        public bool UpdateAnnonce(int idAnnonce, Annonce updatedAnnonce, int allPrice)
         {
             var existingAnnonce = GetAnnonceById(idAnnonce);
 
@@ -137,7 +140,7 @@ namespace ExpressVoitures.Models.Services
 
             existingAnnonce.DateDispoVente = updatedAnnonce.DateDispoVente;
             existingAnnonce.Description = updatedAnnonce.Description;
-            existingAnnonce.Price = updatedAnnonce.Price;
+            existingAnnonce.Price = allPrice;
 
             if (updatedAnnonce.Photo != null && updatedAnnonce.Photo.Length > 0)
                 existingAnnonce.Photo = updatedAnnonce.Photo;
@@ -155,16 +158,8 @@ namespace ExpressVoitures.Models.Services
             {
                 return false;
             }
-
-            //remove existing repair
+            
             var existingReparations = existingVehicule.Reparations.ToList();
-            foreach (var rep in existingReparations)
-            {
-                if (!updatedReparations.Any(r => r.Id == rep.Id))
-                {
-                    _context.Reparations.Remove(rep);
-                }
-            }
 
             //add new repair
             foreach (var updatedRep in updatedReparations)
@@ -172,16 +167,28 @@ namespace ExpressVoitures.Models.Services
                 var existingRep = existingReparations.FirstOrDefault(r => r.Id == updatedRep.Id);
 
                 if (existingRep != null)
-                {
-                    //update
-                    existingRep.Type = updatedRep.Type;
-                    existingRep.Prix = updatedRep.Prix;
+                {//update
+                    if (!(updatedRep.Type == null || updatedRep.Prix == 0))
+                    {//reparation valid
+                        existingRep.Type = updatedRep.Type;
+                        existingRep.Prix = updatedRep.Prix;
+                    }
+                    else
+                    {//reparation NOT valid
+                        _context.Reparations.Remove(existingRep);
+                    }
                 }
                 else
-                {
-                    //add
-                    updatedRep.VehiculeId = vehiculeId;
-                    _context.Reparations.Add(updatedRep);
+                {//add
+                    if (!(updatedRep.Type == null || updatedRep.Prix == 0))
+                    {//reparation valid
+                        updatedRep.VehiculeId = vehiculeId;
+                        _context.Reparations.Add(updatedRep);
+                    }
+                    else
+                    {//reparation Not valid
+                        //do nothing
+                    }
                 }
             }
 
