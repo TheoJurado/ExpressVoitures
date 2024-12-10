@@ -109,7 +109,7 @@ namespace ExpressVoitures
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(adminUser, "Admin");/**/
                 else
-                    throw new Exception("La création de l'utilisateur admin a échoué : " + string.Join(", ", result.Errors.Select(e => e.Description)));
+                    throw new Exception("La crï¿½ation de l'utilisateur admin a ï¿½chouï¿½ : " + string.Join(", ", result.Errors.Select(e => e.Description)));
             }
         }
 
@@ -128,7 +128,7 @@ namespace ExpressVoitures
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(adminUser, "Moderator");/**/
                 else
-                    throw new Exception("La création de l'utilisateur admin a échoué : " + string.Join(", ", result.Errors.Select(e => e.Description)));
+                    throw new Exception("La crï¿½ation de l'utilisateur admin a ï¿½chouï¿½ : " + string.Join(", ", result.Errors.Select(e => e.Description)));
             }
         }
         #endregion
