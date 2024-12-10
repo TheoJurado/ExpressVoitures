@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using ExpressVoitures.Data;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ExpressVoitures.Models.ViewModels;
+using ExpressVoitures.Models;
+using Microsoft.Extensions.Options;
 
 namespace ExpressVoitures.Controllers
 {
@@ -16,11 +18,13 @@ namespace ExpressVoitures.Controllers
     {
         private readonly IVoitureService _VoitureService;
         private readonly ApplicationDbContext _context;
+        private readonly AppSettings _appSettings;
 
-        public AdminController(IVoitureService voitureService, ApplicationDbContext context)
+        public AdminController(IVoitureService voitureService, ApplicationDbContext context, IOptions<AppSettings> appSettings)
         {
             _VoitureService = voitureService;
             _context = context;
+            _appSettings = appSettings.Value;
         }
 
         public IActionResult AddCar()
@@ -94,14 +98,6 @@ namespace ExpressVoitures.Controllers
                     ? VoitureService.ByteArrayToFormFile(annonce.Photo, "photo.jpg", "image/jpeg")
                     : null
             };/**/
-            if (annonce.Photo == null || annonce.Photo.Length == 0)
-                Console.WriteLine("Aucune photo disponible dans l'annonce.");
-            else
-                Console.WriteLine($"Photo trouvée avec une taille de {annonce.Photo.Length} octets.");
-            if (allData.Photo != null)
-                Console.WriteLine($"Fichier créé : {allData.Photo.FileName}, Taille : {allData.Photo.Length} octets");
-            else
-                Console.WriteLine("La conversion en IFormFile a échoué.");
             
             return View(allData);
         }
@@ -109,9 +105,9 @@ namespace ExpressVoitures.Controllers
         [HttpPost]
         public IActionResult SaveUpdateCar([FromForm]DataAllInclusive model)
         {
-            int price = ((int)model.TransactionA.Price) + 500;
+            double price = model.TransactionA.Price + _appSettings.Marge;
             foreach (Reparation rep in model.dataReparations)
-                price += ((int)rep.Prix);
+                price += rep.Prix;
 
             if (!_VoitureService.UpdateAnnonce(model.dataAnnonce.Id, model.dataAnnonce, price))
                 return BadRequest("Erreur lors de la mise à jour de l'annonce.");
@@ -123,6 +119,11 @@ namespace ExpressVoitures.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        
+
+
+
 
         // GET: AdminController
         public ActionResult Index()

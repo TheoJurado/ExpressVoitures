@@ -21,7 +21,7 @@ namespace ExpressVoitures.Models.Services
 
         public void DeleteAnnonce(int id);
         public bool UpdateVehicule(int idCar, Vehicule car, bool isAdmin = false);
-        public bool UpdateAnnonce(int idAnnonce, Annonce annonce, int allPrice);
+        public bool UpdateAnnonce(int idAnnonce, Annonce annonce, double allPrice);
         public bool UpdateReparations(int vId, List<Reparation> allRepair);
 
     }

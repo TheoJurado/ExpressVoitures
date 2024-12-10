@@ -20,7 +20,7 @@
         {
             @if (a.Vehicule.Statut == StatutVehicule.EnVente || (a.DateDispoVente != DateOnly.MinValue && a.Vehicule.Statut != StatutVehicule.Vendu) || (User.IsInRole("Admin") || User.IsInRole("Moderator")))
             {
-                <div class="car-card">
+                <div class="car-card" data-id="@a.Id">
                     @if (a.Photo != null && a.Photo.Length > 4)
                     {
                         <img src="data:image/jpeg;base64,@(Convert.ToBase64String(a.Photo))" alt="Photo de la voiture" />
@@ -35,13 +35,26 @@
                         <p>Année: @a.Vehicule.Annee</p>
                         <p>Finition: @a.Vehicule.Finition</p>
                         <p class="price">Prix: @a.Price €</p>
-                        <form id="@a.Id" asp-action="SeeCarIndex" asp-controller="CarDetail" method="post">
-                            <input type="hidden" name="idToTransfer" value="@a.Id" />
-                            <button type="submit">Information</button>
-                        </form>
                     </div>
                 </div>
+                <form id="form-@a.Id" asp-action="SeeCarIndex" asp-controller="CarDetail" method="post" style="display:none;">
+                    <input type="hidden" name="idToTransfer" value="@a.Id" />
+                </form>
             }
         }
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".car-card").forEach(function (card) {
+            card.addEventListener("click", function () {
+                const id = card.getAttribute("data-id");
+                const form = document.getElementById(`form-${id}`);
+                if (form) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>

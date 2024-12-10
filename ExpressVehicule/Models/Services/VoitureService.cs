@@ -1,24 +1,24 @@
 ﻿using ExpressVoitures.Data;
 using ExpressVoitures.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace ExpressVoitures.Models.Services
 {
     public class VoitureService : IVoitureService
     {
         private static ApplicationDbContext _context;
+        private readonly AppSettings _appSettings;
 
-        public VoitureService(ApplicationDbContext context)
+        public VoitureService(ApplicationDbContext context, IOptions<AppSettings> appSettings)
         {
             _context = context;
+            _appSettings = appSettings.Value;
         }
         public IEnumerable<Transaction> GetAllTransactions()
         {
             IEnumerable<Transaction> allTransaction = _context.Transactions.Where(t => t.Id > 0);
-            /*foreach (Transaction transaction in allTransaction)
-            {
-                transaction.Vehicule = GetCarById(transaction.VehiculeId);
-            }/**/
+            
             return allTransaction.ToList();
         }
 
@@ -35,9 +35,7 @@ namespace ExpressVoitures.Models.Services
         }
 
         public Vehicule? GetCarById(int id)
-        {/*
-            List<Vehicule> cars = GetAllVoitures().ToList();
-            return cars.Find(v => v.Id == id);/**/
+        {
             return _context.Vehicules
                 .Include(v => v.Reparations)
                 .Include(v => v.TransactionAchat)
@@ -52,9 +50,7 @@ namespace ExpressVoitures.Models.Services
         }
 
         public Annonce? GetAnnonceById(int id)
-        {/*
-            IEnumerable<Annonce> allAnnonce = _context.Annonces.Where(a => a.Id > 0);
-            return allAnnonce.First(a => a.Id == id);/**/
+        {
             return _context.Annonces
                 .Include(a => a.Vehicule)
                 .ThenInclude(v => v.TransactionAchat)
@@ -69,12 +65,7 @@ namespace ExpressVoitures.Models.Services
             {
                 transactionAchat.VehiculeLinked = car;
                 car.TransactionAchat = transactionAchat;
-            }/*
-            if (transactionVente != null)
-            {
-                transactionVente.VehiculeVente = car;
-                car.TransactionVente = transactionVente;
-            }/**/
+            }
             if (reparations != null)
                 foreach (Reparation r in reparations)
                 {
@@ -91,7 +82,7 @@ namespace ExpressVoitures.Models.Services
             double priceAllRepar = 0;
             foreach (Reparation r in car.Reparations)
                 priceAllRepar += r.Prix;
-            annonce.Price = car.TransactionAchat.Price + priceAllRepar + 500;
+            annonce.Price = car.TransactionAchat.Price + priceAllRepar + _appSettings.Marge;
 
             _context.Vehicules.Add(car);
             _context.Transactions.Add(transactionAchat);
@@ -118,7 +109,7 @@ namespace ExpressVoitures.Models.Services
 
             existingVehicule.Statut = updatedVehicule.Statut;
             if (isAdmin)
-            {
+            {//admin part
                 existingVehicule.CodeVin = updatedVehicule.CodeVin;
                 existingVehicule.Annee = updatedVehicule.Annee;
                 existingVehicule.Marque = updatedVehicule.Marque;
@@ -131,7 +122,7 @@ namespace ExpressVoitures.Models.Services
             return true;
         }
 
-        public bool UpdateAnnonce(int idAnnonce, Annonce updatedAnnonce, int allPrice)
+        public bool UpdateAnnonce(int idAnnonce, Annonce updatedAnnonce, double allPrice)
         {
             var existingAnnonce = GetAnnonceById(idAnnonce);
 

@@ -12,7 +12,10 @@ namespace ExpressVoitures
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            
+
+            //link file appsettings.json
+            builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("CustomSettings"));
+
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
