@@ -20,7 +20,7 @@
         {
             @if (a.Vehicule.Statut == StatutVehicule.EnVente || (a.DateDispoVente != DateOnly.MinValue && a.Vehicule.Statut != StatutVehicule.Vendu) || (User.IsInRole("Admin") || User.IsInRole("Moderator")))
             {
-                <div class="car-card" data-id="@a.Id">
+                <div class="car-card" tabindex="0" data-id="@a.Id" aria-label="@a.Vehicule.Marque @a.Vehicule.Model">
                     @if (a.Photo != null && a.Photo.Length > 4)
                     {
                         <img src="data:image/jpeg;base64,@(Convert.ToBase64String(a.Photo))" alt="Photo de la voiture" />
@@ -48,11 +48,24 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".car-card").forEach(function (card) {
+            //mouse click
             card.addEventListener("click", function () {
                 const id = card.getAttribute("data-id");
                 const form = document.getElementById(`form-${id}`);
                 if (form) {
                     form.submit();
+                }
+            });
+
+            //enter or space
+            card.addEventListener("keydown", function (event) {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault(); // block scroll from space bar
+                    const id = card.getAttribute("data-id");
+                    const form = document.getElementById(`form-${id}`);
+                    if (form) {
+                        form.submit();
+                    }
                 }
             });
         });
