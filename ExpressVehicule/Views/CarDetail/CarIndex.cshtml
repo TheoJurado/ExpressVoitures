@@ -3,73 +3,69 @@
 @{
     ViewData["Title"] = "Car Page";
 }
-<br />
+<head>
+    <title>ExpressVoitures</title>
+    <link rel="stylesheet" href="@Url.Content("~/css/CarIndexStyle.css")">
+</head>
 <div id="panel-body">
-    <table class="table table-bordered table-striped table-sm">
-        <thead>
-            <tr>
-                <th><label>Année</label></th>
-                <th><label>Marque</label></th>
-                <th><label>Modèle</label></th>
-                <th><label>Finition</label></th>
-                <th><label>Prix</label></th>
-                <th><label>Description</label></th>
-                <th><label>Photo</label></th>
-                <th><label>Disponibilité</label></th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model.Vehicule != null)
+    <div class="return-link">
+        <a href="/" class="back-link">← Retour</a>
+    </div>
+    @if (Model.Vehicule != null)
+    {
+        <div class="vehicle-details">
+            @if (Model.Photo != null && Model.Photo.Length > 4)
             {
-                <tr>
-                    <td>@Model.Vehicule.Annee</td>
-                    <td>@Model.Vehicule.Marque</td>
-                    <td>@Model.Vehicule.Model</td>
-                    <td>@Model.Vehicule.Finition</td>
-                    <td style="text-align:center">@Model.Price <label> €</label></td>
-                    <td>@Model.Description</td>
-                    <td>
-                        @if (Model.Photo != null && Model.Photo.Length > 4)
+                <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Photo))" alt="Photo de la voiture" />
+            }
+            else
+            {
+                <img src="@Url.Content("~/Ressources/placeholder.jpg")" alt="Aucune photo disponible" />
+            }
+
+            <div class="content-container">
+                @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                {
+                    <div class="actions-container">
+                        @using (Html.BeginForm("UpdateCar", "CarDetail", FormMethod.Post))
                         {
-                            <img src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Photo))" alt="Photo" style="max-width: 100px; max-height: 100px;" />
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="submit" class="text-link update-link">modifier</button>
                         }
-                        else
+                        @if (User.IsInRole("Admin"))
                         {
-                            <span>Aucune photo</span>
+                            @using (Html.BeginForm("DeleteCar", "CarDetail", FormMethod.Post))
+                            {
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <button type="submit" class="text-link delete-link">supprimer</button>
+                            }
                         }
-                    </td>
-                    <td>
-                        @if(Model.Vehicule.Statut == StatutVehicule.EnVente)
+                    </div>
+                }
+
+                <div class="details-container">
+                    <p class="price"><strong>Prix :</strong> @Model.Price €</p>
+                    <p><strong>Année :</strong> @Model.Vehicule.Annee</p>
+                    <h2>@Model.Vehicule.Marque @Model.Vehicule.Model</h2>
+                    <p><strong>Finition :</strong> @Model.Vehicule.Finition</p>
+                    <p><strong>Description :</strong> @Model.Description</p>
+                    <p>
+                        <strong>Disponibilité :</strong>
+                        @if (Model.Vehicule.Statut == StatutVehicule.EnVente)
                         {
                             <span>Immédiate</span>
                         }
                         else
                         {
-                            <span>@Model.DateDispoVente</span>
+                            @Model.DateDispoVente
                         }
-                    </td>
-                </tr>
-            }
-            else
-            {
-                <tr>
-                    <td colspan="5">Véhicule non disponible</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    
-    @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+    else
     {
-        @using (Html.BeginForm("DeleteCar", "CarDetail", FormMethod.Post))
-        {
-            <input type="hidden" name="id" value="@Model.Id" />
-            <button type="submit" class="btn btn-danger">Supprimer l'annonce</button>
-        }
-        @using (Html.BeginForm("UpdateCar", "CarDetail", FormMethod.Post))
-        {
-            <input type="hidden" name="id" value="@Model.Id" />
-            <button type="submit" class="btn btn-primary">Modifier l'annonce</button>
-        }
+        <p>Véhicule non disponible</p>
     }
 </div>

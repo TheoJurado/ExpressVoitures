@@ -10,7 +10,6 @@ namespace ExpressVoitures.Data
         public virtual DbSet<Reparation> Reparations { get; set; }
         public virtual DbSet<Vehicule> Vehicules { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
-        public virtual DbSet<Admin> Admins { get; set; }
 
         /// <summary>
         /// Add-migration -context ApplicationDbContext -Output Data/Migations InitDataBase
@@ -30,15 +29,15 @@ namespace ExpressVoitures.Data
             // Relation Vehicule -> Transaction (1..2 : 1..1)
             modelBuilder.Entity<Vehicule>()
                 .HasOne(v => v.TransactionAchat)
-                .WithOne(t => t.VehiculeAchat)
-                .HasForeignKey<Transaction>(t => t.TransactionAchatId)
+                .WithOne(t => t.VehiculeLinked)
+                .HasForeignKey<Transaction>(t => t.VehiculeLinkedId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Vehicule>()
-                .HasOne(v => v.TransactionVente)
+                .HasOne(v => v.TransactionVente);/*
                 .WithOne(t => t.VehiculeVente)
                 .HasForeignKey<Transaction>(t => t.TransactionVenteId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict);/**/
             /*
             modelBuilder.Entity<Transaction>()
                 .Navigation(t => t.Vehicule)

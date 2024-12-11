@@ -3,6 +3,7 @@ using ExpressVoitures.Models;
 using ExpressVoitures.Models.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 namespace ExpressVoitures
 {
@@ -11,7 +12,10 @@ namespace ExpressVoitures
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            
+
+            //link file appsettings.json
+            builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("CustomSettings"));
+
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -28,6 +32,11 @@ namespace ExpressVoitures
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/Home/Index";//if no admin, go to : /Home/Index
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -39,6 +48,7 @@ namespace ExpressVoitures
                 //roles
                 await SeedDatabaseWithRolesAsync(app);
                 await CreateDefaultAdminAsync(app);
+                await CreateDefaultMechaAsync(app);
             }
             else
             {
@@ -47,8 +57,14 @@ namespace ExpressVoitures
                 app.UseHsts();
             }
 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Ressources")), RequestPath = "/Ressources"
+            });
 
             app.UseRouting();
 
@@ -93,7 +109,26 @@ namespace ExpressVoitures
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(adminUser, "Admin");/**/
                 else
-                    throw new Exception("La création de l'utilisateur admin a échoué : " + string.Join(", ", result.Errors.Select(e => e.Description)));
+                    throw new Exception("La crï¿½ation de l'utilisateur admin a ï¿½chouï¿½ : " + string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
+        }
+
+        private static async Task CreateDefaultMechaAsync(WebApplication app)
+        {
+            using var scope = app.Services.CreateScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var adminEmail = "mod@admin.com";
+            var adminPassword = "Moderator!1";
+
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            if (adminUser == null)
+            {
+                adminUser = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
+                var result = await userManager.CreateAsync(adminUser, adminPassword);
+                if (result.Succeeded)
+                    await userManager.AddToRoleAsync(adminUser, "Moderator");/**/
+                else
+                    throw new Exception("La crï¿½ation de l'utilisateur admin a ï¿½chouï¿½ : " + string.Join(", ", result.Errors.Select(e => e.Description)));
             }
         }
         #endregion

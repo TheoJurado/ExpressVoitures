@@ -6,11 +6,11 @@ namespace ExpressVoitures.Models.Entities
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public string CodeVin { get; set; }
         public StatutVehicule Statut { get; set; }
-
         public int Annee { get; set; }
-        [Required]
+        
         public string Marque { get; set; }
         public string Model { get; set; }
         public string Finition { get; set; }

@@ -8,11 +8,11 @@
 
         public TransactionType Type { get; set; }
 
-        public int? TransactionAchatId { get; set; }
-        public Vehicule? VehiculeAchat { get; set; }
-
+        public int? VehiculeLinkedId { get; set; }
+        public Vehicule? VehiculeLinked { get; set; }
+        /*
         public int? TransactionVenteId { get; set; }
-        public Vehicule? VehiculeVente { get; set; }
+        public Vehicule? VehiculeVente { get; set; }/**/
     }
 
     public enum TransactionType

@@ -7,18 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExpressVoitures.Data;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using ExpressVoitures.Models.ViewModels;
+using ExpressVoitures.Models;
+using Microsoft.Extensions.Options;
 
 namespace ExpressVoitures.Controllers
 {
+    [Authorize(Roles = "Admin,Moderator")]
     public class AdminController : Controller
     {
         private readonly IVoitureService _VoitureService;
         private readonly ApplicationDbContext _context;
+        private readonly AppSettings _appSettings;
 
-        public AdminController(IVoitureService voitureService, ApplicationDbContext context)
+        public AdminController(IVoitureService voitureService, ApplicationDbContext context, IOptions<AppSettings> appSettings)
         {
             _VoitureService = voitureService;
             _context = context;
+            _appSettings = appSettings.Value;
         }
 
         public IActionResult AddCar()
@@ -42,17 +48,9 @@ namespace ExpressVoitures.Controllers
             }/**/
 
             model.TransactionA.Type = TransactionType.Buy;
-            model.TransactionA.VehiculeAchat = model.dataVehicule;
+            model.TransactionA.VehiculeLinked = model.dataVehicule;
             model.dataVehicule.TransactionAchat = model.TransactionA;
-            /*
-            foreach (var state in ModelState)
-            {
-                if (state.Value.Errors.Count > 0)
-                {
-                    string errorMessage = $"Key: {state.Key}, Error: {string.Join(", ", state.Value.Errors.Select(e => e.ErrorMessage))}";
-                    Console.WriteLine(errorMessage);
-                }
-            }/**/
+            
 
             if (ModelState.IsValid)
             {
@@ -100,33 +98,20 @@ namespace ExpressVoitures.Controllers
                     ? VoitureService.ByteArrayToFormFile(annonce.Photo, "photo.jpg", "image/jpeg")
                     : null
             };/**/
-            if (annonce.Photo == null || annonce.Photo.Length == 0)
-                Console.WriteLine("Aucune photo disponible dans l'annonce.");
-            else
-                Console.WriteLine($"Photo trouvée avec une taille de {annonce.Photo.Length} octets.");
-            if (allData.Photo != null)
-                Console.WriteLine($"Fichier créé : {allData.Photo.FileName}, Taille : {allData.Photo.Length} octets");
-            else
-                Console.WriteLine("La conversion en IFormFile a échoué.");
-            /*
-            var allData = new DataAllInclusive();
-            allData.dataAnnonce = annonce;
-            allData.dataVehicule = annonce.Vehicule;
-            allData.TransactionA = annonce.Vehicule.TransactionAchat;//l'erreur cible cette ligne
-            allData.TransactionV = annonce.Vehicule.TransactionVente;
-            allData.dataReparations = annonce.Vehicule.Reparations.ToList();
-            if (annonce.Photo != null)
-                allData.Photo = VoitureService.ByteArrayToFormFile(annonce.Photo, "photo.jpg", "image/jpeg");
-            /**/
+            
             return View(allData);
         }
 
         [HttpPost]
-        public IActionResult SaveUpdateCar(DataAllInclusive model)
+        public IActionResult SaveUpdateCar([FromForm]DataAllInclusive model)
         {
-            if (!_VoitureService.UpdateAnnonce(model.dataAnnonce.Id, model.dataAnnonce))
+            double price = model.TransactionA.Price + _appSettings.Marge;
+            foreach (Reparation rep in model.dataReparations)
+                price += rep.Prix;
+
+            if (!_VoitureService.UpdateAnnonce(model.dataAnnonce.Id, model.dataAnnonce, price))
                 return BadRequest("Erreur lors de la mise à jour de l'annonce.");
-            if (!_VoitureService.UpdateVehicule(model.dataVehicule.Id, model.dataVehicule))
+            if (!_VoitureService.UpdateVehicule(model.dataVehicule.Id, model.dataVehicule, model.isAdministrator))
                 return BadRequest("Erreur lors de la mise à jour du véhicule.");
             if (!_VoitureService.UpdateReparations(model.dataVehicule.Id, model.dataReparations))
                 return BadRequest("Erreur lors de la mise à jour des réparations.");
@@ -134,6 +119,11 @@ namespace ExpressVoitures.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        
+
+
+
 
         // GET: AdminController
         public ActionResult Index()

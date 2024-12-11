@@ -1,5 +1,6 @@
 ﻿using ExpressVoitures.Models.Entities;
 using ExpressVoitures.Models.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,11 +29,13 @@ namespace ExpressVoitures.Controllers
             return View(annonce);
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteCar(int id)
         {
             _VoitureService.DeleteAnnonce(id);
             return RedirectToAction("Index", "Home");
         }
+        [Authorize(Roles = "Admin,Moderator")]
         public IActionResult UpdateCar(int id)
         {
             return RedirectToAction("UpdateCar", "Admin", new { id = id });

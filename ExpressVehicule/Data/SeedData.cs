@@ -96,6 +96,17 @@ namespace ExpressVoitures.Data
                 transaction3Vente
             );
             context.SaveChanges();
+
+            vehicule1.TransactionAchat = transaction1Achat;
+            vehicule2.TransactionAchat = transaction2Achat;
+            vehicule3.TransactionAchat = transaction3Achat;
+
+            context.Vehicules.UpdateRange(
+                vehicule1,
+                vehicule2,
+                vehicule3
+            );
+            context.SaveChanges();
             #endregion
 
             #region reparation

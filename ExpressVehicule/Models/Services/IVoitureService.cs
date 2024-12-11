@@ -20,8 +20,8 @@ namespace ExpressVoitures.Models.Services
         void SaveCar(Vehicule car, List<Reparation> reparations, Transaction transactionAchat, Annonce annonce, Transaction transactionVente);
 
         public void DeleteAnnonce(int id);
-        public bool UpdateVehicule(int idCar, Vehicule car);
-        public bool UpdateAnnonce(int idAnnonce, Annonce annonce);
+        public bool UpdateVehicule(int idCar, Vehicule car, bool isAdmin = false);
+        public bool UpdateAnnonce(int idAnnonce, Annonce annonce, double allPrice);
         public bool UpdateReparations(int vId, List<Reparation> allRepair);
 
     }
