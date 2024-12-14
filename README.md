@@ -6,10 +6,10 @@ Fonctionnalités :
 - Création et modification des annonces.
 
 Outil :
-SQL Server Management
-Visual Studio
+- SQL Server Management
+- Visual Studio
 
 Installation :
 - Cloner le dépôt
 - Installer SQL Server Management & Visual Studio
-- Lancer et executer le projet
+- Lancer et exécuter le projet
